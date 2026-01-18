@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "784422647430",
+    "project_id": "signiai-efc07",
+    "storage_bucket": "signiai-efc07.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:784422647430:android:18b2753af3f671d5290307",
+        "android_client_info": {
+          "package_name": "com.example.signiai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsLo9To1_ZtkV6l-lr9Y9USnsgt4rChtk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
