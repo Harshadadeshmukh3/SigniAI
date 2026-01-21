@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         imgLogo = findViewById(R.id.imgLogo)
 
         // ===== Login Views =====
-        val etUser = findViewById<EditText>(R.id.etUsername)
+        val etEmail = findViewById<EditText>(R.id.etEmail)
         val etPass = findViewById<EditText>(R.id.etPassword)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
         tvForgot = findViewById(R.id.tvForgot)
@@ -47,9 +47,7 @@ class MainActivity : AppCompatActivity() {
 
         // ===== Reset Views =====
         val etResetEmail = findViewById<EditText>(R.id.etResetEmail)
-        val btnChange = findViewById<Button>(R.id.btnChange)
-        val etNewPass = findViewById<EditText>(R.id.etNewPassword)
-        val etConfirmPass = findViewById<EditText>(R.id.etConfirmPassword)
+        val btnReset = findViewById<Button>(R.id.btnReset)
 
         // ===== Signup Views =====
         val btnSignup = findViewById<Button>(R.id.btnSignup)
@@ -63,15 +61,13 @@ class MainActivity : AppCompatActivity() {
 
         // ===== APPLY EYE ICON =====
         togglePassword(etPass)
-        togglePassword(etNewPass)
-        togglePassword(etConfirmPass)
         togglePassword(etSignupPassword)
         togglePassword(etSignupConfirmPassword)
 
         // ================= LOGIN =================
         btnLogin.setOnClickListener {
 
-            val email = etUser.text.toString().trim()
+            val email = etEmail.text.toString().trim()
             val password = etPass.text.toString()
 
             if (email.isEmpty() || password.isEmpty()) {
@@ -99,7 +95,7 @@ class MainActivity : AppCompatActivity() {
             imgLogo.visibility = View.VISIBLE
         }
 
-        btnChange.setOnClickListener {
+        btnReset.setOnClickListener {
 
             val email = etResetEmail.text.toString().trim()
 

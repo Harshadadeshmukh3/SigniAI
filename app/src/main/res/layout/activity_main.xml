@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:background="#FFFFFF">
-    <!-- force change -->
 
     <LinearLayout
         android:id="@+id/root"
@@ -33,19 +32,20 @@
 
             <!-- USERNAME -->
             <EditText
-                android:id="@+id/etUsername"
+                android:id="@+id/etEmail"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="username, or email"
-                android:background="#F5F5F5"
+                android:layout_height="wrap_content"
+                android:hint="Enter Gmail ID"
                 android:padding="12dp"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="12dp"
+                android:inputType="textEmailAddress"/>
+
 
             <TextView
-                android:id="@+id/tvUserError"
+                android:id="@+id/tvEmailError"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Incorrect username or email"
+                android:text="Incorrect emailID"
                 android:textColor="#FF0000"
                 android:textSize="12sp"
                 android:visibility="gone"
@@ -79,7 +79,7 @@
                 android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Log in"
+                android:text="Login"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 android:backgroundTint="#8E8EFF" />
@@ -141,49 +141,19 @@
                 android:id="@+id/etResetEmail"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="Email"
+                android:hint="Enter Email ID "
                 android:inputType="textEmailAddress"
                 android:background="#F5F5F5"
                 android:padding="12dp"
                 android:layout_marginBottom="12dp"/>
 
-            <TextView
+            <Button
+                android:id="@+id/btnReset"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Please create a new password that you don't use on any other sites"
-                android:textSize="12sp"
-                android:layout_marginBottom="8dp" />
+                android:text="Send Reset Link"
+                android:layout_marginTop="16dp"/>
 
-
-            <EditText
-                android:id="@+id/etNewPassword"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="New password"
-                android:drawableEnd="@drawable/ic_eye"
-                android:inputType="textPassword"
-                android:background="#F5F5F5"
-                android:padding="12dp"
-                android:layout_marginBottom="8dp" />
-
-            <EditText
-                android:id="@+id/etConfirmPassword"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="Confirm password"
-                android:drawableEnd="@drawable/ic_eye"
-                android:inputType="textPassword"
-                android:background="#F5F5F5"
-                android:padding="12dp"
-                android:layout_marginBottom="16dp"/>
-
-            <Button
-                android:id="@+id/btnChange"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:text="Change"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#8E8EFF"/>
         </LinearLayout>
 
 
@@ -305,6 +275,7 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="6dp"/>
 
+
             <CheckBox
                 android:id="@+id/cbDeaf"
                 android:layout_width="wrap_content"
@@ -315,8 +286,7 @@
                 android:id="@+id/cbMute"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mute"
-                android:layout_marginBottom="16dp" />
+                android:text="Mute" />
 
             <CheckBox
                 android:id="@+id/cbNormal"
@@ -346,5 +316,3 @@
 
     </LinearLayout>
 </ScrollView>
-< ! - -   t e s t   - - >  
- 
