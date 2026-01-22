@@ -2,7 +2,6 @@ package com.example.signiai
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.text.method.PasswordTransformationMethod
 import android.util.Patterns
 import android.view.MotionEvent
@@ -10,19 +9,25 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mAuth: FirebaseAuth
-    // ✅ GLOBAL layouts
+
+    // Layouts
     private lateinit var loginLayout: LinearLayout
     private lateinit var signupLayout: LinearLayout
     private lateinit var resetLayout: LinearLayout
-   private  lateinit var homeLayout: LinearLayout
+    private lateinit var homeLayout: LinearLayout
+    private lateinit var adminDashboardLayout: LinearLayout
     private lateinit var imgLogo: ImageView
+
+    // TextViews
     private lateinit var tvForgot: TextView
     private lateinit var tvToSignup: TextView
     private lateinit var tvSignupTitle: TextView
     private lateinit var tvSignupSubtitle: TextView
+    private lateinit var txtAdminEmail: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,178 +35,156 @@ class MainActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
 
-        // ✅ INITIALIZE layouts (NO val here)
+        // Init layouts
         loginLayout = findViewById(R.id.loginLayout)
         signupLayout = findViewById(R.id.signupLayout)
         resetLayout = findViewById(R.id.resetLayout)
         homeLayout = findViewById(R.id.homeLayout)
+        adminDashboardLayout = findViewById(R.id.adminDashboardLayout)
         imgLogo = findViewById(R.id.imgLogo)
 
-        // ===== Login Views =====
+        // Init views
         val etEmail = findViewById<EditText>(R.id.etEmail)
-        val etPass = findViewById<EditText>(R.id.etPassword)
+        val etPassword = findViewById<EditText>(R.id.etPassword)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
+
         tvForgot = findViewById(R.id.tvForgot)
         tvToSignup = findViewById(R.id.tvToSignup)
         tvSignupTitle = findViewById(R.id.tvSignupTitle)
         tvSignupSubtitle = findViewById(R.id.tvSignupSubtitle)
+        txtAdminEmail = findViewById(R.id.txtAdminEmail)
 
-        // ===== Reset Views =====
-        val etResetEmail = findViewById<EditText>(R.id.etResetEmail)
         val btnReset = findViewById<Button>(R.id.btnReset)
+        val etResetEmail = findViewById<EditText>(R.id.etResetEmail)
 
-        // ===== Signup Views =====
         val btnSignup = findViewById<Button>(R.id.btnSignup)
-        val etSignupPassword = findViewById<EditText>(R.id.etSignupPassword)
         val etSignupEmail = findViewById<EditText>(R.id.etSignupEmail)
-        val etSignupConfirmPassword = findViewById<EditText>(R.id.etSignupConfirmPassword)
+        val etSignupPassword = findViewById<EditText>(R.id.etSignupPassword)
+        val etSignupConfirmPassword =
+            findViewById<EditText>(R.id.etSignupConfirmPassword)
         val tvBackToLogin = findViewById<TextView>(R.id.tvBackToLogin)
-        val cbDeaf = findViewById<CheckBox>(R.id.cbDeaf)
-        val cbMute = findViewById<CheckBox>(R.id.cbMute)
-        val cbNormal = findViewById<CheckBox>(R.id.cbNormal)
 
-        // ===== APPLY EYE ICON =====
-        togglePassword(etPass)
+        togglePassword(etPassword)
         togglePassword(etSignupPassword)
         togglePassword(etSignupConfirmPassword)
 
+        // 👇 VERY IMPORTANT: show login first
+        showLoginOnly()
+
         // ================= LOGIN =================
         btnLogin.setOnClickListener {
-
             val email = etEmail.text.toString().trim()
-            val password = etPass.text.toString()
+            val password = etPassword.text.toString()
 
             if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Fill all fields", Toast.LENGTH_SHORT).show()
+                toast("Fill all fields")
                 return@setOnClickListener
             }
 
             mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Log.d("HOME", "Opening home layout")
-                        Toast.makeText(this, "Login Successful 🎉", Toast.LENGTH_SHORT).show()
-                        // ✅ SWITCH TO HOME PAGE
-                        loginLayout.visibility = View.GONE
-                        signupLayout.visibility = View.GONE
-                        resetLayout.visibility = View.GONE
-                        imgLogo.visibility = View.GONE
-                        homeLayout.visibility = View.VISIBLE
+
+                        val adminEmail = "34harshadad@gmail.com"
+                        hideAll()
+
+                        if (email == adminEmail) {
+                            txtAdminEmail.text = email
+                            adminDashboardLayout.visibility = View.VISIBLE
+                        } else {
+                            homeLayout.visibility = View.VISIBLE
+                        }
+
                     } else {
-                        Toast.makeText(
-                            this,
-                            "Login Failed: ${task.exception?.message}",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        toast(task.exception?.message ?: "Login failed")
                     }
                 }
         }
 
-        // ================= FORGOT PASSWORD =================
+        // ================= FORGOT =================
         tvForgot.setOnClickListener {
-            showOnly(resetLayout)
+            hideAll()
+            resetLayout.visibility = View.VISIBLE
             imgLogo.visibility = View.VISIBLE
         }
 
         btnReset.setOnClickListener {
-
             val email = etResetEmail.text.toString().trim()
-
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 toast("Enter valid email")
                 return@setOnClickListener
             }
 
-            mAuth.sendPasswordResetEmail(email)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        toast("Reset link sent 📩")
-                        showOnly(loginLayout)
-                    } else {
-                        toast(it.exception?.message ?: "Error")
-                    }
-                }
+            mAuth.sendPasswordResetEmail(email).addOnSuccessListener {
+                toast("Reset link sent")
+                showLoginOnly()
+            }
         }
 
         // ================= SIGNUP =================
-        btnSignup.setOnClickListener {
+        tvToSignup.setOnClickListener {
+            hideAll()
+            signupLayout.visibility = View.VISIBLE
+            tvSignupTitle.visibility = View.VISIBLE
+            tvSignupSubtitle.visibility = View.VISIBLE
+        }
 
+        tvBackToLogin.setOnClickListener {
+            showLoginOnly()
+        }
+
+        btnSignup.setOnClickListener {
             val email = etSignupEmail.text.toString().trim()
-            val password = etSignupPassword.text.toString()
+            val pass = etSignupPassword.text.toString()
             val confirm = etSignupConfirmPassword.text.toString()
 
-            if (email.isEmpty() || password.isEmpty() || confirm.isEmpty()) {
+            if (email.isEmpty() || pass.isEmpty() || confirm.isEmpty()) {
                 toast("Fill all fields")
                 return@setOnClickListener
             }
-
-            if (password != confirm) {
+            if (pass != confirm) {
                 toast("Passwords do not match")
                 return@setOnClickListener
             }
 
-            if (!cbDeaf.isChecked && !cbMute.isChecked && !cbNormal.isChecked) {
-                toast("Select user type")
-                return@setOnClickListener
-            }
-
-            mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        toast("Account Created 🎉")
-                        showOnly(loginLayout)
-                    } else {
-                        toast(it.exception?.message ?: "Error")
-                    }
+            mAuth.createUserWithEmailAndPassword(email, pass)
+                .addOnSuccessListener {
+                    toast("Account created")
+                    showLoginOnly()
                 }
-        }
-
-        tvToSignup.setOnClickListener {
-            showOnly(signupLayout)
-        }
-
-        tvBackToLogin.setOnClickListener {
-            showOnly(loginLayout)
+                .addOnFailureListener {
+                    toast(it.message ?: "Error")
+                }
         }
     }
 
-    private fun showOnly(layout: View) {
-
+    // ================= HELPERS =================
+    private fun hideAll() {
         loginLayout.visibility = View.GONE
         signupLayout.visibility = View.GONE
         resetLayout.visibility = View.GONE
-        imgLogo.visibility = View.GONE
         homeLayout.visibility = View.GONE
-
+        adminDashboardLayout.visibility = View.GONE
+        imgLogo.visibility = View.GONE
         tvForgot.visibility = View.GONE
         tvToSignup.visibility = View.GONE
-
-        layout.visibility = View.VISIBLE
-
-        // Show heading ONLY on Signup page
-        if (layout == signupLayout) {
-            tvSignupTitle.visibility = View.VISIBLE
-            tvSignupSubtitle.visibility = View.VISIBLE
-        } else {
-            tvSignupTitle.visibility = View.GONE
-            tvSignupSubtitle.visibility = View.GONE
-        }
-
-        // Show bottom texts ONLY on Login page
-        if (layout == loginLayout) {
-            tvForgot.visibility = View.VISIBLE
-            tvToSignup.visibility = View.VISIBLE
-            imgLogo.visibility = View.VISIBLE
-        }
+        tvSignupTitle.visibility = View.GONE
+        tvSignupSubtitle.visibility = View.GONE
     }
 
-
+    private fun showLoginOnly() {
+        hideAll()
+        loginLayout.visibility = View.VISIBLE
+        imgLogo.visibility = View.VISIBLE
+        tvForgot.visibility = View.VISIBLE
+        tvToSignup.visibility = View.VISIBLE
+    }
 
     private fun toast(msg: String) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 
-    // ================= PASSWORD EYE TOGGLE =================
+    // Password eye
     @SuppressLint("ClickableViewAccessibility")
     private fun togglePassword(editText: EditText) {
         editText.setOnTouchListener { _, event ->
@@ -210,12 +193,9 @@ class MainActivity : AppCompatActivity() {
                 if (drawableEnd != null &&
                     event.rawX >= (editText.right - drawableEnd.bounds.width())
                 ) {
-                    if (editText.transformationMethod is PasswordTransformationMethod) {
-                        editText.transformationMethod = null
-                    } else {
-                        editText.transformationMethod =
-                            PasswordTransformationMethod.getInstance()
-                    }
+                    editText.transformationMethod =
+                        if (editText.transformationMethod is PasswordTransformationMethod)
+                            null else PasswordTransformationMethod.getInstance()
                     editText.setSelection(editText.text.length)
                     return@setOnTouchListener true
                 }

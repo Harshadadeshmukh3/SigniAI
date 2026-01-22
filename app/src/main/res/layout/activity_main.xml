@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center"
+        android:gravity="top"
         android:padding="24dp">
 
         <!-- LOGO -->
@@ -84,7 +84,6 @@
                 android:textColor="#FFFFFF"
                 android:backgroundTint="#8E8EFF" />
 
-
             <!-- OR DIVIDER -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -112,7 +111,29 @@
                     android:layout_height="1dp"
                     android:layout_weight="1"
                     android:background="#CCCCCC" />
+
             </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvForgot"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="12dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Forgot Password?"
+            android:textColor="#1877F2"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvToSignup"
+            android:layout_width="wrap_content"
+            android:layout_height="33dp"
+            android:layout_gravity="center"
+            android:padding="8dp"
+            android:text="Don't have an account? Sign up"
+            android:textColor="@android:color/holo_blue_dark" />
         </LinearLayout>
 
         <!-- ================= RESET PASSWORD ================= -->
@@ -157,31 +178,6 @@
                 android:layout_marginTop="16dp"/>
 
         </LinearLayout>
-
-
-
-        <TextView
-            android:id="@+id/tvForgot"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="12dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:text="Forgot Password?"
-            android:textColor="#1877F2"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/tvToSignup"
-            android:layout_width="wrap_content"
-            android:layout_height="33dp"
-            android:layout_gravity="center"
-            android:padding="8dp"
-            android:text="Don't have an account? Sign up"
-            android:textColor="@android:color/holo_blue_dark" />
-
-
 
         <!-- ================= SIGNUP ================= -->
         <LinearLayout
@@ -332,5 +328,66 @@
                 android:textSize="22sp"
                 android:textStyle="bold"/>
         </LinearLayout>
+                <!-- ================= ADMIN DASHBOARD ================= -->
+                <LinearLayout
+                    android:id="@+id/adminDashboardLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:text="WELCOME Admin Dashboard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="22sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/txtAdminEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="34harshadad@gmail.com"
+                        android:textColor="#666"/>
+
+                    <!-- DASHBOARD CARDS -->
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="2">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Total Users\n1250"
+                            android:padding="16dp"
+                            android:background="#4CAF50"
+                            android:textColor="#FFF"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Revenue\n₹12,500"
+                            android:padding="16dp"
+                            android:background="#2196F3"
+                            android:textColor="#FFF"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:text="Users"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:layout_marginTop="16dp"/>
+
+                    <TextView
+                        android:text="User Feedback"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:layout_marginTop="12dp"/>
+
+            </LinearLayout>
     </LinearLayout>
 </ScrollView>
