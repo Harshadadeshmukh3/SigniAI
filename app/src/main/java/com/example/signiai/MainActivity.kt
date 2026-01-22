@@ -2,6 +2,7 @@ package com.example.signiai
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.text.method.PasswordTransformationMethod
 import android.util.Patterns
 import android.view.MotionEvent
@@ -9,15 +10,14 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mAuth: FirebaseAuth
-
     // ✅ GLOBAL layouts
     private lateinit var loginLayout: LinearLayout
     private lateinit var signupLayout: LinearLayout
     private lateinit var resetLayout: LinearLayout
+   private  lateinit var homeLayout: LinearLayout
     private lateinit var imgLogo: ImageView
     private lateinit var tvForgot: TextView
     private lateinit var tvToSignup: TextView
@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         loginLayout = findViewById(R.id.loginLayout)
         signupLayout = findViewById(R.id.signupLayout)
         resetLayout = findViewById(R.id.resetLayout)
+        homeLayout = findViewById(R.id.homeLayout)
         imgLogo = findViewById(R.id.imgLogo)
 
         // ===== Login Views =====
@@ -78,7 +79,14 @@ class MainActivity : AppCompatActivity() {
             mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
+                        Log.d("HOME", "Opening home layout")
                         Toast.makeText(this, "Login Successful 🎉", Toast.LENGTH_SHORT).show()
+                        // ✅ SWITCH TO HOME PAGE
+                        loginLayout.visibility = View.GONE
+                        signupLayout.visibility = View.GONE
+                        resetLayout.visibility = View.GONE
+                        imgLogo.visibility = View.GONE
+                        homeLayout.visibility = View.VISIBLE
                     } else {
                         Toast.makeText(
                             this,
@@ -163,6 +171,7 @@ class MainActivity : AppCompatActivity() {
         signupLayout.visibility = View.GONE
         resetLayout.visibility = View.GONE
         imgLogo.visibility = View.GONE
+        homeLayout.visibility = View.GONE
 
         tvForgot.visibility = View.GONE
         tvToSignup.visibility = View.GONE

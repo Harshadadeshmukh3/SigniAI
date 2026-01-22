@@ -84,6 +84,7 @@
                 android:textColor="#FFFFFF"
                 android:backgroundTint="#8E8EFF" />
 
+
             <!-- OR DIVIDER -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -113,6 +114,7 @@
                     android:background="#CCCCCC" />
             </LinearLayout>
         </LinearLayout>
+
         <!-- ================= RESET PASSWORD ================= -->
         <LinearLayout
             android:id="@+id/resetLayout"
@@ -178,6 +180,7 @@
             android:padding="8dp"
             android:text="Don't have an account? Sign up"
             android:textColor="@android:color/holo_blue_dark" />
+
 
 
         <!-- ================= SIGNUP ================= -->
@@ -313,6 +316,21 @@
                 android:text="Already have an account? Login"
                 android:textColor="@android:color/holo_blue_dark" />
         </LinearLayout>
+        <!-- ================= HOME PAGE ================= -->
+        <LinearLayout
+            android:id="@+id/homeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="WELCOME TO HOME PAGE"
+                android:textSize="22sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>
