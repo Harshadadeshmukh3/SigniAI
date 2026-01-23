@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
@@ -20,7 +21,7 @@
             android:layout_height="140dp"
             android:src="@drawable/signiai_logo"
             android:scaleType="fitCenter"
-            android:contentDescription="SigniAI Logo"/>
+            android:contentDescription="@string/logo_desc"/>
 
 
         <!-- LOGIN -->
@@ -34,41 +35,46 @@
             <EditText
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter Gmail ID"
-                android:padding="12dp"
+                android:layout_height="48dp"
                 android:layout_marginBottom="12dp"
-                android:inputType="textEmailAddress"/>
-
+                android:padding="12dp"
+                android:hint="@string/enter_email"
+                android:autofillHints="Email"
+                android:inputType="textEmailAddress"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/darker_gray"
+                android:background="@android:drawable/edit_text"/>
 
             <TextView
                 android:id="@+id/tvEmailError"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Incorrect emailID"
+                android:text="@string/incorrect_email"
                 android:textColor="#FF0000"
                 android:textSize="12sp"
                 android:visibility="gone"
                 android:layout_marginBottom="8dp"/>
-
 
             <!-- PASSWORD -->
             <EditText
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="Password"
-                android:inputType="textPassword"
-                android:drawableEnd="@drawable/ic_eye"
-                android:background="#F5F5F5"
+                android:layout_marginBottom="12dp"
                 android:padding="12dp"
-                android:layout_marginBottom="16dp" />
+                android:drawableEnd="@drawable/ic_eye"
+                android:hint="@string/password"
+                android:autofillHints="password"
+                android:inputType="textPassword"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/darker_gray"
+                android:background="@android:drawable/edit_text"/>
 
             <TextView
                 android:id="@+id/tvPassError"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Incorrect password"
+                android:text="@string/incorrect_password"
                 android:textColor="#FF0000"
                 android:textSize="12sp"
                 android:visibility="gone"
@@ -79,10 +85,9 @@
                 android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Login"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#8E8EFF" />
+                android:text="@string/Login"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"/>
 
             <!-- OR DIVIDER -->
             <LinearLayout
@@ -101,8 +106,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="OR"
-                    android:textColor="#888888"
+                    android:text="@string/OR"
+                    android:textColor="@color/text_primary"
                     android:textSize="14sp"
                     android:paddingHorizontal="8dp"/>
 
@@ -122,8 +127,8 @@
             android:layout_marginBottom="12dp"
             android:clickable="true"
             android:focusable="true"
-            android:text="Forgot Password?"
-            android:textColor="#1877F2"
+            android:text="@string/forgot_password"
+            android:textColor="@color/text_primary"
             android:textSize="14sp" />
 
         <TextView
@@ -132,8 +137,8 @@
             android:layout_height="33dp"
             android:layout_gravity="center"
             android:padding="8dp"
-            android:text="Don't have an account? Sign up"
-            android:textColor="@android:color/holo_blue_dark" />
+            android:text="@string/don_t_have_an_account_sign_up"
+            android:textColor="@color/text_primary"/>
         </LinearLayout>
 
         <!-- ================= RESET PASSWORD ================= -->
@@ -147,24 +152,24 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Forgot Password"
+                android:text="@string/Forgot_Password"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_gravity="center"
                 android:layout_marginBottom="12dp" />
 
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Enter your email address"
+                android:text="@string/enter_your_email_address"
                 android:layout_marginBottom="6dp" />
 
             <EditText
                 android:id="@+id/etResetEmail"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="Enter Email ID "
+                android:autofillHints="emailAddress"
+                android:hint="@string/enter_email_id"
                 android:inputType="textEmailAddress"
                 android:background="#F5F5F5"
                 android:padding="12dp"
@@ -174,7 +179,7 @@
                 android:id="@+id/btnReset"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Send Reset Link"
+                android:text="@string/send_reset_link"
                 android:layout_marginTop="16dp"/>
 
         </LinearLayout>
@@ -192,10 +197,10 @@
                 android:id="@+id/tvSignupTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Signup"
+                android:text="@string/signup"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="@color/_000000"
                 android:layout_gravity="center"
                 android:layout_marginBottom="6dp"
                 android:visibility="gone"/>
@@ -204,9 +209,9 @@
                 android:id="@+id/tvSignupSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Create your account"
+                android:text="@string/create_your_account"
                 android:textSize="14sp"
-                android:textColor="#666666"
+                android:textColor="@color/_666666"
                 android:layout_gravity="center"
                 android:layout_marginBottom="20dp"
                 android:visibility="gone"/>
@@ -216,7 +221,9 @@
                 android:id="@+id/etFullName"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="Full Name"
+                android:hint="@string/full_name"
+                android:inputType="textPersonName"
+                android:autofillHints="name"
                 android:background="#F5F5F5"
                 android:padding="12dp"
                 android:layout_marginBottom="12dp"/>
@@ -225,7 +232,9 @@
                 android:id="@+id/etSignupUsername"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="Username"
+                android:hint="@string/username"
+                android:autofillHints="username"
+                android:inputType="textPersonName"
                 android:background="#F5F5F5"
                 android:padding="12dp"
                 android:layout_marginBottom="12dp"/>
@@ -234,7 +243,8 @@
                 android:id="@+id/etSignupEmail"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="Email ID"
+                android:hint="@string/email_id"
+                android:autofillHints="emailAddress"
                 android:inputType="textEmailAddress"
                 android:background="#F5F5F5"
                 android:padding="12dp"
@@ -244,7 +254,8 @@
                 android:id="@+id/etSignupPassword"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="Create Password"
+                android:autofillHints="password"
+                android:hint="@string/create_password"
                 android:background="#F5F5F5"
                 android:padding="12dp"
                 android:drawableEnd="@drawable/ic_eye"
@@ -257,7 +268,8 @@
                 android:id="@+id/etSignupConfirmPassword"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="Confirm Password"
+                android:autofillHints="password"
+                android:hint="@string/confirm_password"
                 android:background="#F5F5F5"
                 android:padding="12dp"
                 android:drawableEnd="@drawable/ic_eye"
@@ -270,7 +282,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="User Type"
+                android:text="@string/user_type"
                 android:textStyle="bold"
                 android:layout_marginBottom="6dp"/>
 
@@ -279,26 +291,26 @@
                 android:id="@+id/cbDeaf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Deaf" />
+                android:text="@string/deaf" />
 
             <CheckBox
                 android:id="@+id/cbMute"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mute" />
+                android:text="@string/mute" />
 
             <CheckBox
                 android:id="@+id/cbNormal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Normal"
+                android:text="@string/normal"
                 android:layout_marginBottom="16dp" />
 
             <Button
                 android:id="@+id/btnSignup"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Done"
+                android:text="@string/done"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 android:backgroundTint="#8E8EFF"/>
@@ -309,85 +321,136 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:padding="12dp"
-                android:text="Already have an account? Login"
+                android:text="@string/already_have_an_account_login"
                 android:textColor="@android:color/holo_blue_dark" />
         </LinearLayout>
         <!-- ================= HOME PAGE ================= -->
-        <LinearLayout
-            android:id="@+id/homeLayout"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/homeLayoutMain"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center"
             android:visibility="gone">
 
             <TextView
+                android:id="@+id/tvHomeTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="WELCOME TO HOME PAGE"
+                android:text="@string/welcome_to_home_page"
                 android:textSize="22sp"
-                android:textStyle="bold"/>
-        </LinearLayout>
-                <!-- ================= ADMIN DASHBOARD ================= -->
-                <LinearLayout
-                    android:id="@+id/adminDashboardLayout"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <!-- ================= ADMIN DASHBOARD ================= -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/adminDashboardLayoutMain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/txtTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Welcome_admin"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <!-- ADMIN EMAIL -->
+            <TextView
+                android:id="@+id/txtAdminEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Harshada_Deshmukh"
+                android:textSize="14sp"
+                android:textColor="#666666"
+                android:layout_marginTop="4dp"
+                app:layout_constraintTop_toBottomOf="@id/txtTitle"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <GridLayout
+            android:id="@+id/gridCards"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/txtTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardUsers"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp">
+
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/Total_users"/>
+            </androidx.cardview.widget.CardView>
 
-                    <TextView
-                        android:text="WELCOME Admin Dashboard"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="22sp"
-                        android:textStyle="bold"/>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardGrowth"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp">
 
-                    <TextView
-                        android:id="@+id/txtAdminEmail"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="34harshadad@gmail.com"
-                        android:textColor="#666"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/app_growth"/>
+            </androidx.cardview.widget.CardView>
 
-                    <!-- DASHBOARD CARDS -->
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:weightSum="2">
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardFeedback"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Total Users\n1250"
-                            android:padding="16dp"
-                            android:background="#4CAF50"
-                            android:textColor="#FFF"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/feedback"/>
+            </androidx.cardview.widget.CardView>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Revenue\n₹12,500"
-                            android:padding="16dp"
-                            android:background="#2196F3"
-                            android:textColor="#FFF"/>
-                    </LinearLayout>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardAdmin"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp">
 
-                    <TextView
-                        android:text="Users"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:layout_marginTop="16dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/admin_logout"/>
+            </androidx.cardview.widget.CardView>
 
-                    <TextView
-                        android:text="User Feedback"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:layout_marginTop="12dp"/>
+        </GridLayout>
 
-            </LinearLayout>
+        <FrameLayout
+            android:id="@+id/adminFragmentContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/gridCards"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 </ScrollView>

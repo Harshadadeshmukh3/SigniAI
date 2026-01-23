@@ -2,12 +2,14 @@ package com.example.signiai
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.util.Patterns
 import android.view.MotionEvent
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
@@ -18,8 +20,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var loginLayout: LinearLayout
     private lateinit var signupLayout: LinearLayout
     private lateinit var resetLayout: LinearLayout
-    private lateinit var homeLayout: LinearLayout
-    private lateinit var adminDashboardLayout: LinearLayout
+    private lateinit var homeLayoutMain: ConstraintLayout
+    private lateinit var adminDashboardLayoutMain: ConstraintLayout
     private lateinit var imgLogo: ImageView
 
     // TextViews
@@ -27,7 +29,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvToSignup: TextView
     private lateinit var tvSignupTitle: TextView
     private lateinit var tvSignupSubtitle: TextView
-    private lateinit var txtAdminEmail: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,40 +36,39 @@ class MainActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
 
-        // Init layouts
+        // ===== INIT LAYOUTS =====
         loginLayout = findViewById(R.id.loginLayout)
         signupLayout = findViewById(R.id.signupLayout)
         resetLayout = findViewById(R.id.resetLayout)
-        homeLayout = findViewById(R.id.homeLayout)
-        adminDashboardLayout = findViewById(R.id.adminDashboardLayout)
+        homeLayoutMain = findViewById(R.id.homeLayoutMain)
+        adminDashboardLayoutMain = findViewById(R.id.adminDashboardLayoutMain)
         imgLogo = findViewById(R.id.imgLogo)
 
-        // Init views
+        // ===== INIT INPUTS =====
         val etEmail = findViewById<EditText>(R.id.etEmail)
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
+
+        val etSignupEmail = findViewById<EditText>(R.id.etSignupEmail)
+        val etSignupPassword = findViewById<EditText>(R.id.etSignupPassword)
+        val etSignupConfirmPassword = findViewById<EditText>(R.id.etSignupConfirmPassword)
+        val btnSignup = findViewById<Button>(R.id.btnSignup)
+
+        val etResetEmail = findViewById<EditText>(R.id.etResetEmail)
+        val btnReset = findViewById<Button>(R.id.btnReset)
 
         tvForgot = findViewById(R.id.tvForgot)
         tvToSignup = findViewById(R.id.tvToSignup)
         tvSignupTitle = findViewById(R.id.tvSignupTitle)
         tvSignupSubtitle = findViewById(R.id.tvSignupSubtitle)
-        txtAdminEmail = findViewById(R.id.txtAdminEmail)
-
-        val btnReset = findViewById<Button>(R.id.btnReset)
-        val etResetEmail = findViewById<EditText>(R.id.etResetEmail)
-
-        val btnSignup = findViewById<Button>(R.id.btnSignup)
-        val etSignupEmail = findViewById<EditText>(R.id.etSignupEmail)
-        val etSignupPassword = findViewById<EditText>(R.id.etSignupPassword)
-        val etSignupConfirmPassword =
-            findViewById<EditText>(R.id.etSignupConfirmPassword)
         val tvBackToLogin = findViewById<TextView>(R.id.tvBackToLogin)
 
+        // ===== PASSWORD EYE =====
         togglePassword(etPassword)
         togglePassword(etSignupPassword)
         togglePassword(etSignupConfirmPassword)
 
-        // 👇 VERY IMPORTANT: show login first
+        // ===== DEFAULT =====
         showLoginOnly()
 
         // ================= LOGIN =================
@@ -82,43 +82,21 @@ class MainActivity : AppCompatActivity() {
             }
 
             mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
+                .addOnSuccessListener {
 
-                        val adminEmail = "34harshadad@gmail.com"
-                        hideAll()
+                    hideAll()
 
-                        if (email == adminEmail) {
-                            txtAdminEmail.text = email
-                            adminDashboardLayout.visibility = View.VISIBLE
-                        } else {
-                            homeLayout.visibility = View.VISIBLE
-                        }
-
+                    // Admin check
+                    val adminEmail = "34harshadad@gmail.com"
+                    if (email == adminEmail) {
+                        adminDashboardLayoutMain.visibility = View.VISIBLE
                     } else {
-                        toast(task.exception?.message ?: "Login failed")
+                        homeLayoutMain.visibility = View.VISIBLE
                     }
                 }
-        }
-
-        // ================= FORGOT =================
-        tvForgot.setOnClickListener {
-            hideAll()
-            resetLayout.visibility = View.VISIBLE
-            imgLogo.visibility = View.VISIBLE
-        }
-
-        btnReset.setOnClickListener {
-            val email = etResetEmail.text.toString().trim()
-            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                toast("Enter valid email")
-                return@setOnClickListener
-            }
-
-            mAuth.sendPasswordResetEmail(email).addOnSuccessListener {
-                toast("Reset link sent")
-                showLoginOnly()
-            }
+                .addOnFailureListener {
+                    toast(it.message ?: "Login failed")
+                }
         }
 
         // ================= SIGNUP =================
@@ -127,10 +105,6 @@ class MainActivity : AppCompatActivity() {
             signupLayout.visibility = View.VISIBLE
             tvSignupTitle.visibility = View.VISIBLE
             tvSignupSubtitle.visibility = View.VISIBLE
-        }
-
-        tvBackToLogin.setOnClickListener {
-            showLoginOnly()
         }
 
         btnSignup.setOnClickListener {
@@ -153,8 +127,37 @@ class MainActivity : AppCompatActivity() {
                     showLoginOnly()
                 }
                 .addOnFailureListener {
-                    toast(it.message ?: "Error")
+                    toast(it.message ?: "Signup failed")
                 }
+        }
+
+        tvBackToLogin.setOnClickListener { showLoginOnly() }
+
+        // ================= FORGOT =================
+        tvForgot.setOnClickListener {
+            hideAll()
+            resetLayout.visibility = View.VISIBLE
+            imgLogo.visibility = View.VISIBLE
+        }
+
+        btnReset.setOnClickListener {
+            val email = etResetEmail.text.toString().trim()
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                toast("Enter valid email")
+                return@setOnClickListener
+            }
+
+            mAuth.sendPasswordResetEmail(email)
+                .addOnSuccessListener {
+                    toast("Reset link sent")
+                    showLoginOnly()
+                }
+        }
+
+        // ================= ADMIN LOGOUT =================
+        findViewById<View>(R.id.cardAdmin).setOnClickListener {
+            mAuth.signOut()
+            showLoginOnly()
         }
     }
 
@@ -163,8 +166,8 @@ class MainActivity : AppCompatActivity() {
         loginLayout.visibility = View.GONE
         signupLayout.visibility = View.GONE
         resetLayout.visibility = View.GONE
-        homeLayout.visibility = View.GONE
-        adminDashboardLayout.visibility = View.GONE
+        homeLayoutMain.visibility = View.GONE
+        adminDashboardLayoutMain.visibility = View.GONE
         imgLogo.visibility = View.GONE
         tvForgot.visibility = View.GONE
         tvToSignup.visibility = View.GONE
@@ -184,23 +187,33 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 
-    // Password eye
+    // ================= PASSWORD EYE =================
     @SuppressLint("ClickableViewAccessibility")
     private fun togglePassword(editText: EditText) {
         editText.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
-                val drawableEnd = editText.compoundDrawables[2]
-                if (drawableEnd != null &&
-                    event.rawX >= (editText.right - drawableEnd.bounds.width())
+                val drawable = editText.compoundDrawables[2]
+                if (drawable != null &&
+                    event.rawX >= (editText.right - drawable.bounds.width())
                 ) {
                     editText.transformationMethod =
                         if (editText.transformationMethod is PasswordTransformationMethod)
-                            null else PasswordTransformationMethod.getInstance()
+                            HideReturnsTransformationMethod.getInstance()
+                        else
+                            PasswordTransformationMethod.getInstance()
+
                     editText.setSelection(editText.text.length)
                     return@setOnTouchListener true
                 }
             }
             false
         }
+    }
+
+    // Prevent app auto close
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        super.onBackPressed()
+        moveTaskToBack(true)
     }
 }
