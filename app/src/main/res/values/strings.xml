@@ -62,5 +62,12 @@
     <string name="Admin_dashboard">Admin Dashboard</string>
     <string name="Welcome_admin">Welcome, Admin</string>
     <string name="Harshada_Deshmukh">Harshada Deshmukh</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="start_video_call">Start Video Call</string>
+    <string name="calls">Calls</string>
+    <string name="profile">Profile</string>
+    <string name="tap_to_connect_instantly">Tap to connect instantly</string>
+    <string name="Profile">Profile</string>
+    <string name="todo">TODO</string>
 
 </resources>

@@ -16,7 +16,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mAuth: FirebaseAuth
 
-    // Layouts
     private lateinit var loginLayout: LinearLayout
     private lateinit var signupLayout: LinearLayout
     private lateinit var resetLayout: LinearLayout
@@ -24,7 +23,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adminDashboardLayoutMain: ConstraintLayout
     private lateinit var imgLogo: ImageView
 
-    // TextViews
     private lateinit var tvForgot: TextView
     private lateinit var tvToSignup: TextView
     private lateinit var tvSignupTitle: TextView
@@ -36,7 +34,6 @@ class MainActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
 
-        // ===== INIT LAYOUTS =====
         loginLayout = findViewById(R.id.loginLayout)
         signupLayout = findViewById(R.id.signupLayout)
         resetLayout = findViewById(R.id.resetLayout)
@@ -44,7 +41,6 @@ class MainActivity : AppCompatActivity() {
         adminDashboardLayoutMain = findViewById(R.id.adminDashboardLayoutMain)
         imgLogo = findViewById(R.id.imgLogo)
 
-        // ===== INIT INPUTS =====
         val etEmail = findViewById<EditText>(R.id.etEmail)
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
@@ -63,15 +59,12 @@ class MainActivity : AppCompatActivity() {
         tvSignupSubtitle = findViewById(R.id.tvSignupSubtitle)
         val tvBackToLogin = findViewById<TextView>(R.id.tvBackToLogin)
 
-        // ===== PASSWORD EYE =====
         togglePassword(etPassword)
         togglePassword(etSignupPassword)
         togglePassword(etSignupConfirmPassword)
 
-        // ===== DEFAULT =====
         showLoginOnly()
 
-        // ================= LOGIN =================
         btnLogin.setOnClickListener {
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString()
@@ -83,12 +76,8 @@ class MainActivity : AppCompatActivity() {
 
             mAuth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
-
                     hideAll()
-
-                    // Admin check
-                    val adminEmail = "34harshadad@gmail.com"
-                    if (email == adminEmail) {
+                    if (email == "34harshadad@gmail.com") {
                         adminDashboardLayoutMain.visibility = View.VISIBLE
                     } else {
                         homeLayoutMain.visibility = View.VISIBLE
@@ -99,7 +88,6 @@ class MainActivity : AppCompatActivity() {
                 }
         }
 
-        // ================= SIGNUP =================
         tvToSignup.setOnClickListener {
             hideAll()
             signupLayout.visibility = View.VISIBLE
@@ -133,7 +121,6 @@ class MainActivity : AppCompatActivity() {
 
         tvBackToLogin.setOnClickListener { showLoginOnly() }
 
-        // ================= FORGOT =================
         tvForgot.setOnClickListener {
             hideAll()
             resetLayout.visibility = View.VISIBLE
@@ -154,14 +141,12 @@ class MainActivity : AppCompatActivity() {
                 }
         }
 
-        // ================= ADMIN LOGOUT =================
         findViewById<View>(R.id.cardAdmin).setOnClickListener {
             mAuth.signOut()
             showLoginOnly()
         }
     }
 
-    // ================= HELPERS =================
     private fun hideAll() {
         loginLayout.visibility = View.GONE
         signupLayout.visibility = View.GONE
@@ -187,7 +172,6 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 
-    // ================= PASSWORD EYE =================
     @SuppressLint("ClickableViewAccessibility")
     private fun togglePassword(editText: EditText) {
         editText.setOnTouchListener { _, event ->
@@ -208,12 +192,5 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
-    }
-
-    // Prevent app auto close
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        super.onBackPressed()
-        moveTaskToBack(true)
     }
 }
