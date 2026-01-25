@@ -1,73 +1,65 @@
 <resources>
+
+    <!-- APP -->
     <string name="app_name">SigniAI</string>
     <string name="logo_desc">SigniAI Logo</string>
-    <string name="enter_email">Enter Gmail ID</string>
-    <string name="incorrect_email">Incorrect email ID</string>
-    <string name="password">Password</string>
-    <string name="password_error">Incorrect password</string>
-    <string name="login">Login</string>
+
+    <!-- COMMON -->
     <string name="or">OR</string>
-    <string name="forgot_password">Forgot Password?</string>
-    <string name="signup_text">Do not  have an account? Sign up</string>
-    <string name="full_name">textPersonName</string>
+    <string name="done">Done</string>
+    <string name="todo">TODO</string>
+    <string name="Profile">Profile</string>
 
-    <string name="forgot_title">Forgot Password</string>
-    <string name="enter_email_address">Enter your email address</string>
-
-    <string name="admin_dashboard">Welcome, Admin</string>
-    <string name="total_users">Total Users</string>
-    <string name="orders_today">Orders Today</string>
-    <string name="total_revenue">Total Revenue</string>
-    <string name="pending_reports">Pending Reports</string>
-    <string name="incorrect_password">Incorrect password</string>
-    <string name="don_t_have_an_account_sign_up">Don\'t have an account? Sign up</string>
-    <string name="Forgot_Password">Forgot Password</string>
-    <string name="enter_your_email_address">Enter your email address</string>
-    <string name="OR">OR</string>
+    <!-- LOGIN -->
+    <string name="enter_email">Enter Gmail ID</string>
     <string name="enter_email_id">Enter Email ID</string>
+    <string name="password">Password</string>
+    <string name="Login">login</string>
+    <string name="incorrect_email">Incorrect email ID</string>
+    <string name="incorrect_password">Incorrect password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="don_t_have_an_account_sign_up">Do not have an account? Sign up</string>
+
+    <!-- RESET PASSWORD -->
+    <string name="forgot_title">Forgot Password</string>
+    <string name="enter_your_email_address">Enter your email address</string>
     <string name="send_reset_link">Send Reset Link</string>
+
+    <!-- SIGNUP -->
     <string name="signup">Signup</string>
     <string name="create_your_account">Create your account</string>
+    <string name="full_name">Full Name</string>
+    <string name="username">Username</string>
     <string name="email_id">Email ID</string>
     <string name="create_password">Create Password</string>
-    <string name="_12">12</string>
-    <string name="Pending_Reports">Pending Reports</string>
-    <string name="_12_500">₹12,500</string>
-    <string name="Total_Revenue">Total Revenue</string>
-    <string name="_350">350</string>
-    <string name="Orders_Today">Orders Today</string>
-    <string name="_1250">1250</string>
-    <string name="Total_Users">Total Users</string>
-    <string name="_34harshadad_gmail_com">34harshadad@gmail.com</string>
-    <string name="welcome_admin">Welcome, Admin</string>
-    <string name="already_have_an_account_login">Already have an account? Login</string>
-    <string name="welcome_to_home_page">WELCOME TO HOME PAGE</string>
-    <string name="done">Done</string>
-    <string name="normal">Normal</string>
-    <string name="mute">Mute</string>
-    <string name="deaf">Deaf</string>
-    <string name="user_type">User Type</string>
     <string name="confirm_password">Confirm Password</string>
-    <string name="Login">Login</string>
-    <string name="admin_email">admin_email</string>
-    <string name="value_reports">value_reports</string>
-    <string name="value_users">value_users</string>
-    <string name="value_orders">value_orders</string>
-    <string name="value_revenue">value_revenue</string>
-    <string name="username">username</string>
-    <string name="admin_logout">Admin / Logout</string>
-    <string name="Total_users">Total Users</string>
-    <string name="app_growth">App Growth</string>
-    <string name="feedback">Feedback</string>
-    <string name="Admin_dashboard">Admin Dashboard</string>
-    <string name="Welcome_admin">Welcome, Admin</string>
-    <string name="Harshada_Deshmukh">Harshada Deshmukh</string>
+    <string name="already_have_an_account_login">Already have an account? Login</string>
+
+    <!-- USER TYPE -->
+    <string name="user_type">User Type</string>
+    <string name="deaf">Deaf</string>
+    <string name="mute">Mute</string>
+    <string name="normal">Normal</string>
+
+    <!-- HOME PAGE -->
     <string name="welcome_back">Welcome Back</string>
     <string name="start_video_call">Start Video Call</string>
-    <string name="calls">Calls</string>
-    <string name="profile">Profile</string>
     <string name="tap_to_connect_instantly">Tap to connect instantly</string>
-    <string name="Profile">Profile</string>
-    <string name="todo">TODO</string>
+    <string name="calls">Calls</string>
+
+    <!-- ADMIN DASHBOARD -->
+    <string name="welcome_admin">Welcome, Admin</string>
+    <string name="admin_name">Harshada Deshmukh</string>
+
+    <string name="total_users">Total Users</string>
+    <string name="active_users">Active Users</string>
+    <string name="new_users_today">New Users Today</string>
+    <string name="total_ai_requests">Total AI Requests</string>
+    <string name="last_login_activity">Last Login Activity</string>
+
+    <!-- PLACEHOLDER VALUES (UPDATED FROM KOTLIN) -->
+    <string name="value_zero">0</string>
+    <string name="value_no">No</string>
+    <string name="Password">Password</string>
 
 </resources>

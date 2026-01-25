@@ -1,16 +1,28 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFF</color>
+    <!--Error-->
+    <color name="text_error">#FF0000</color>
+
+    <!-- Text -->
     <color name="text_primary">#212121</color>
-    <color name="text_hint">#424242</color>
-    <color name="hint_color">#757575</color>
-    <color name="button_text">#FFFFFF</color>
+    <color name="text_secondary">#666666</color>
+    <color name="text_hint">#757575</color>
+    <color name="_000000">#000000</color>
+
+    <!-- Inputs -->
     <color name="input_text">#111827</color>
     <color name="input_hint">#9CA3AF</color>
-    <color name="text_secondary">#6B7280</color>
-    <color name="_888888">#888888</color>
-    <color name="f5f5f5">#F5F5F5</color>
-    <color name="_000000">#000000</color>
-    <color name="_666666">#666666</color>
+    <color name="input_bg">#F5F5F5</color>
+
+    <!-- Buttons -->
+    <color name="button_text">#FFFFFF</color>
+
+    <!--or-->
+    <color name="or">#CCCCCC</color>
+
+    <!--Admin-->
+    <color name="total_user">#008000</color>
+    <color name="active_user">#800080</color>
+    <color name="new_user"> #F59E0B</color>
+    <color name="total_ai_request">#0000FF</color>
+    <color name="last_user">#808080</color>
 </resources>

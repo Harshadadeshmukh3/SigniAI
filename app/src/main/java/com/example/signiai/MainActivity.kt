@@ -8,6 +8,7 @@ import android.util.Patterns
 import android.view.MotionEvent
 import android.view.View
 import android.widget.*
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -16,24 +17,27 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mAuth: FirebaseAuth
 
+    // Layouts
     private lateinit var loginLayout: LinearLayout
     private lateinit var signupLayout: LinearLayout
     private lateinit var resetLayout: LinearLayout
     private lateinit var homeLayoutMain: ConstraintLayout
     private lateinit var adminDashboardLayoutMain: ConstraintLayout
-    private lateinit var imgLogo: ImageView
 
+    private lateinit var imgLogo: ImageView
     private lateinit var tvForgot: TextView
     private lateinit var tvToSignup: TextView
     private lateinit var tvSignupTitle: TextView
     private lateinit var tvSignupSubtitle: TextView
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         mAuth = FirebaseAuth.getInstance()
 
+        // Layout references
         loginLayout = findViewById(R.id.loginLayout)
         signupLayout = findViewById(R.id.signupLayout)
         resetLayout = findViewById(R.id.resetLayout)
@@ -41,18 +45,22 @@ class MainActivity : AppCompatActivity() {
         adminDashboardLayoutMain = findViewById(R.id.adminDashboardLayoutMain)
         imgLogo = findViewById(R.id.imgLogo)
 
+        // Login views
         val etEmail = findViewById<EditText>(R.id.etEmail)
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
 
+        // Signup views
         val etSignupEmail = findViewById<EditText>(R.id.etSignupEmail)
         val etSignupPassword = findViewById<EditText>(R.id.etSignupPassword)
         val etSignupConfirmPassword = findViewById<EditText>(R.id.etSignupConfirmPassword)
         val btnSignup = findViewById<Button>(R.id.btnSignup)
 
+        // Reset views
         val etResetEmail = findViewById<EditText>(R.id.etResetEmail)
         val btnReset = findViewById<Button>(R.id.btnReset)
 
+        // Text links
         tvForgot = findViewById(R.id.tvForgot)
         tvToSignup = findViewById(R.id.tvToSignup)
         tvSignupTitle = findViewById(R.id.tvSignupTitle)
@@ -65,6 +73,38 @@ class MainActivity : AppCompatActivity() {
 
         showLoginOnly()
 
+        // 👁️ PASSWORD SHOW / HIDE (drawableEnd ic_eye)
+        // =====================================================
+        var isVisible = false
+
+        etPassword.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+
+                val drawableEnd = 2 // RIGHT drawable
+
+                if (etPassword.compoundDrawables[drawableEnd] != null &&
+                    event.rawX >=
+                    (etPassword.right -
+                            etPassword.compoundDrawables[drawableEnd].bounds.width())
+                ) {
+
+                    isVisible = !isVisible
+
+                    etPassword.transformationMethod =
+                        if (isVisible)
+                            HideReturnsTransformationMethod.getInstance()
+                        else
+                            PasswordTransformationMethod.getInstance()
+
+                    etPassword.setSelection(etPassword.text.length)
+                    return@setOnTouchListener true
+                }
+            }
+            false
+        }
+
+
+        // LOGIN
         btnLogin.setOnClickListener {
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString()
@@ -77,6 +117,8 @@ class MainActivity : AppCompatActivity() {
             mAuth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
                     hideAll()
+
+                    // ADMIN CHECK
                     if (email == "34harshadad@gmail.com") {
                         adminDashboardLayoutMain.visibility = View.VISIBLE
                     } else {
@@ -88,6 +130,7 @@ class MainActivity : AppCompatActivity() {
                 }
         }
 
+        // GO TO SIGNUP
         tvToSignup.setOnClickListener {
             hideAll()
             signupLayout.visibility = View.VISIBLE
@@ -95,6 +138,7 @@ class MainActivity : AppCompatActivity() {
             tvSignupSubtitle.visibility = View.VISIBLE
         }
 
+        // SIGNUP
         btnSignup.setOnClickListener {
             val email = etSignupEmail.text.toString().trim()
             val pass = etSignupPassword.text.toString()
@@ -104,6 +148,7 @@ class MainActivity : AppCompatActivity() {
                 toast("Fill all fields")
                 return@setOnClickListener
             }
+
             if (pass != confirm) {
                 toast("Passwords do not match")
                 return@setOnClickListener
@@ -119,8 +164,12 @@ class MainActivity : AppCompatActivity() {
                 }
         }
 
-        tvBackToLogin.setOnClickListener { showLoginOnly() }
+        // BACK TO LOGIN
+        tvBackToLogin.setOnClickListener {
+            showLoginOnly()
+        }
 
+        // FORGOT PASSWORD
         tvForgot.setOnClickListener {
             hideAll()
             resetLayout.visibility = View.VISIBLE
@@ -129,6 +178,7 @@ class MainActivity : AppCompatActivity() {
 
         btnReset.setOnClickListener {
             val email = etResetEmail.text.toString().trim()
+
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 toast("Enter valid email")
                 return@setOnClickListener
@@ -139,13 +189,13 @@ class MainActivity : AppCompatActivity() {
                     toast("Reset link sent")
                     showLoginOnly()
                 }
-        }
-
-        findViewById<View>(R.id.cardAdmin).setOnClickListener {
-            mAuth.signOut()
-            showLoginOnly()
+                .addOnFailureListener {
+                    toast("Failed to send reset link")
+                }
         }
     }
+
+    // ================= HELPERS =================
 
     private fun hideAll() {
         loginLayout.visibility = View.GONE
