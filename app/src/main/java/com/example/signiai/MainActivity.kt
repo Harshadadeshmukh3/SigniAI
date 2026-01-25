@@ -1,5 +1,9 @@
 package com.example.signiai
 
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FieldValue
+import java.util.Calendar
+import com.google.firebase.firestore.Query
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
@@ -16,7 +20,7 @@ import com.google.firebase.auth.FirebaseAuth
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mAuth: FirebaseAuth
-
+    private lateinit var db: FirebaseFirestore
     // Layouts
     private lateinit var loginLayout: LinearLayout
     private lateinit var signupLayout: LinearLayout
@@ -30,12 +34,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvSignupTitle: TextView
     private lateinit var tvSignupSubtitle: TextView
 
+    private lateinit var tvTotalUsers: TextView
+    private lateinit var tvActiveUsers: TextView
+    private lateinit var tvNewUsers: TextView
+    private lateinit var tvAiRequests: TextView
+    private lateinit var tvLastLogin: TextView
+
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         mAuth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
 
         // Layout references
         loginLayout = findViewById(R.id.loginLayout)
@@ -51,6 +63,7 @@ class MainActivity : AppCompatActivity() {
         val btnLogin = findViewById<Button>(R.id.btnLogin)
 
         // Signup views
+        val etSignupName = findViewById<EditText>(R.id.etSignupName)
         val etSignupEmail = findViewById<EditText>(R.id.etSignupEmail)
         val etSignupPassword = findViewById<EditText>(R.id.etSignupPassword)
         val etSignupConfirmPassword = findViewById<EditText>(R.id.etSignupConfirmPassword)
@@ -66,6 +79,14 @@ class MainActivity : AppCompatActivity() {
         tvSignupTitle = findViewById(R.id.tvSignupTitle)
         tvSignupSubtitle = findViewById(R.id.tvSignupSubtitle)
         val tvBackToLogin = findViewById<TextView>(R.id.tvBackToLogin)
+
+        //admin
+        tvTotalUsers = findViewById(R.id.tvTotalUsers)
+        tvActiveUsers = findViewById(R.id.tvActiveUsers)
+        tvNewUsers = findViewById(R.id.tvNewUsers)
+        tvAiRequests = findViewById(R.id.tvAiRequests)
+        tvLastLogin = findViewById(R.id.tvLastLogin)
+
 
         togglePassword(etPassword)
         togglePassword(etSignupPassword)
@@ -103,9 +124,9 @@ class MainActivity : AppCompatActivity() {
             false
         }
 
-
         // LOGIN
         btnLogin.setOnClickListener {
+
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString()
 
@@ -121,6 +142,9 @@ class MainActivity : AppCompatActivity() {
                     // ADMIN CHECK
                     if (email == "34harshadad@gmail.com") {
                         adminDashboardLayoutMain.visibility = View.VISIBLE
+                        // 🔥 ADD THIS LINE HERE
+                        loadAdminDashboardData()
+
                     } else {
                         homeLayoutMain.visibility = View.VISIBLE
                     }
@@ -140,9 +164,17 @@ class MainActivity : AppCompatActivity() {
 
         // SIGNUP
         btnSignup.setOnClickListener {
+
+            val name = etSignupName.text.toString().trim()
             val email = etSignupEmail.text.toString().trim()
             val pass = etSignupPassword.text.toString()
             val confirm = etSignupConfirmPassword.text.toString()
+
+            // 🔴 ADD IT HERE (EXACT PLACE)
+            if (name.isEmpty()) {
+                toast("Enter your name")
+                return@setOnClickListener
+            }
 
             if (email.isEmpty() || pass.isEmpty() || confirm.isEmpty()) {
                 toast("Fill all fields")
@@ -154,15 +186,35 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            // 🔥 Firebase signup starts AFTER validation
             mAuth.createUserWithEmailAndPassword(email, pass)
                 .addOnSuccessListener {
-                    toast("Account created")
-                    showLoginOnly()
+
+                    val uid = mAuth.currentUser!!.uid
+
+                    val userMap = hashMapOf(
+                        "name" to name,
+                        "email" to email,
+                        "userType" to "user",
+                        "role" to "USER",
+                        "createdAt" to com.google.firebase.firestore.FieldValue.serverTimestamp(),
+                        "isActive" to true
+                    )
+
+                    com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                        .collection("users")
+                        .document(uid)
+                        .set(userMap)
+                        .addOnSuccessListener {
+                            toast("Account created")
+                            showLoginOnly()
+                        }
                 }
                 .addOnFailureListener {
                     toast(it.message ?: "Signup failed")
                 }
         }
+
 
         // BACK TO LOGIN
         tvBackToLogin.setOnClickListener {
@@ -195,6 +247,61 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun loadAdminDashboardData() {
+
+        val db = FirebaseFirestore.getInstance()
+
+        // TOTAL USERS
+        db.collection("users")
+            .get()
+            .addOnSuccessListener {
+                tvTotalUsers.text = it.size().toString()
+            }
+
+        // ACTIVE USERS
+        db.collection("users")
+            .whereEqualTo("isActive", true)
+            .get()
+            .addOnSuccessListener {
+                tvActiveUsers.text = it.size().toString()
+            }
+
+        // NEW USERS (TODAY)
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+
+        val startOfDay = calendar.time
+
+        db.collection("users")
+            .whereGreaterThan("createdAt", startOfDay)
+            .get()
+            .addOnSuccessListener {
+                tvNewUsers.text = it.size().toString()
+            }
+
+        // AI REQUESTS
+        db.collection("gesture_history")
+            .get()
+            .addOnSuccessListener {
+                tvAiRequests.text = it.size().toString()
+            }
+
+        // LAST LOGIN
+        db.collection("users")
+            .orderBy("createdAt", Query.Direction.DESCENDING)
+            .limit(1)
+            .get()
+            .addOnSuccessListener {
+                if (!it.isEmpty) {
+                    val ts = it.documents[0].getTimestamp("createdAt")
+                    tvLastLogin.text = ts?.toDate().toString()
+                }
+            }
+    }
+    
     // ================= HELPERS =================
 
     private fun hideAll() {
