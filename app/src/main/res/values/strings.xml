@@ -48,18 +48,30 @@
     <string name="calls">Calls</string>
 
     <!-- ADMIN DASHBOARD -->
-    <string name="welcome_admin">Welcome, Admin</string>
-    <string name="admin_name">Harshada Deshmukh</string>
 
+    <string name="admin_dashboard">Admin Dashboard</string>
     <string name="total_users">Total Users</string>
     <string name="active_users">Active Users</string>
-    <string name="new_users_today">New Users Today</string>
-    <string name="total_ai_requests">Total AI Requests</string>
-    <string name="last_login_activity">Last Login Activity</string>
+    <string name="new_users">New Users</string>
+    <string name="ai_requests">AI Requests</string>
+    <string name="last_login">Last Login</string>
+    <string name="admin_panel">ADMIN PANEL</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="user_management">User Management</string>
+    <string name="activity_logs">Activity Logs</string>
+    <string name="settings">Settings</string>
+    <string name="logout">Logout</string>
+    <string name="ai_features">AI / Features</string>
+    <string name="content_management">Content Management</string>
+    <string name="notifications">Notifications</string>
+    <string name="reports_analysis"><![CDATA[Reports & Analysis]]></string>
+    <string name="feedback_support"><![CDATA[Feedback & Support]]></string>
+    <string name="admin_roles"><![CDATA[Admin & Roles]]></string>
+    <string name="search_users">Search users...</string>
+    <string name="user_management1">User Management</string>
+    <string name="menu_logo">menu_logo</string>
+    <string name="activity_logs1">Activity Logs</string>
 
     <!-- PLACEHOLDER VALUES (UPDATED FROM KOTLIN) -->
-    <string name="value_zero">0</string>
-    <string name="value_no">No</string>
-    <string name="Password">Password</string>
 
 </resources>

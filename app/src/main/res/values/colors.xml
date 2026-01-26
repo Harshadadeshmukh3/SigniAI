@@ -20,9 +20,11 @@
     <color name="or">#CCCCCC</color>
 
     <!--Admin-->
-    <color name="total_user">#008000</color>
+    <color name ="card_total_user">#4A90E2</color>
+    <color name="total_active_user">#27AE60</color>
     <color name="active_user">#800080</color>
     <color name="new_user"> #F59E0B</color>
     <color name="total_ai_request">#0000FF</color>
     <color name="last_user">#808080</color>
+
 </resources>

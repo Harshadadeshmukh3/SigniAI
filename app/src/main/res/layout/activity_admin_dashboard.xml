@@ -1,214 +1,382 @@
-<androidx.constraintlayout.widget.ConstraintLayout
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/button_text">
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
+    <!-- ================= MAIN CONTENT ================= -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutDashboardMain"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F4F6F9">
+        <!-- HAMBURGER -->
+        <ImageView
+            android:id="@+id/btnMenu"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_margin="16dp"
+            android:padding="4dp"
+            android:contentDescription="@string/menu_logo"
+            android:src="@drawable/ic_menu"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+        <!-- TITLE -->
+        <TextView
+            android:id="@+id/toolbarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/admin_dashboard"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/_000000"
+            android:layout_marginStart="16dp"
+            app:layout_constraintStart_toEndOf="@id/btnMenu"
+            app:layout_constraintTop_toTopOf="@id/btnMenu"/>
+        <!-- SCROLL CONTENT -->
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            app:layout_constraintTop_toBottomOf="@id/toolbarTitle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            <!-- ✅ ONLY ONE DIRECT CHILD -->
+            <LinearLayout
+                android:id="@+id/layoutDashboard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-<LinearLayout
-            android:id="@+id/adminDashboardContainer"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/dashboardLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
+                <!-- TOTAL USERS -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardTotalUsers"
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:backgroundTint="@color/card_total_user"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="8dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/cardActiveUsers"
+                    app:layout_constraintWidth_percent="0.48">
+                    <TextView
+                        android:id="@+id/txtTotalUsers"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/total_users"
+                        android:textColor="@color/button_text"
+                        android:textSize="18sp"
+                        android:layout_gravity="center"/>
+                </androidx.cardview.widget.CardView>
+                <!-- ACTIVE USERS -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardActiveUsers"
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:backgroundTint="#27AE60"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="8dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/cardTotalUsers"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintWidth_percent="0.48">
+                    <TextView
+                        android:id="@+id/tvActiveUsers"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/active_users"
+                        android:textColor="@color/button_text"
+                        android:textSize="18sp"
+                        android:layout_gravity="center"/>
+                </androidx.cardview.widget.CardView>
+                <!-- NEW USERS -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardNewUsers"
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="12dp"
+                    android:backgroundTint="@color/new_user"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/cardTotalUsers"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/cardAI"
+                    app:layout_constraintWidth_percent="0.48">
+                    <TextView
+                        android:id="@+id/txvNewUsers"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/new_users"
+                        android:textColor="@color/button_text"
+                        android:textSize="18sp"
+                        android:layout_gravity="center"/>
+                </androidx.cardview.widget.CardView>
+                <!-- AI REQUESTS -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardAI"
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="12dp"
+                    android:backgroundTint="@color/total_ai_request"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/cardActiveUsers"
+                    app:layout_constraintStart_toEndOf="@id/cardNewUsers"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintWidth_percent="0.48">
+                    <TextView
+                        android:id="@+id/txtAiRequestsText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ai_requests"
+                        android:textColor="@color/button_text"
+                        android:textSize="18sp"
+                        android:layout_gravity="center"/>
+                </androidx.cardview.widget.CardView>
+                <!-- LAST USER -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardLastUser"
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="12dp"
+                    android:backgroundTint="@color/last_user"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/cardNewUsers"
+                    app:layout_constraintStart_toEndOf="@id/cardNewUsers"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintWidth_percent="0.48">
+                    <TextView
+                        android:id="@+id/lastLoginText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/last_login"
+                        android:textColor="@color/button_text"
+                        android:textSize="18sp"
+                        android:layout_gravity="center"/>
+                </androidx.cardview.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- ✅ USER MANAGEMENT (PASTE HERE) -->
+            <LinearLayout
+                android:id="@+id/layoutUserManagement"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:padding="16dp"
+                android:background="#F5F6FA">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_management1"
+                    android:textSize="22sp"
+                    android:textStyle="bold"/>
+
+                <EditText
+                    android:id="@+id/etSearchUser"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:autofillHints="search"
+                    android:hint="@string/search_users"
+                    android:inputType="text"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:background="@android:drawable/edit_text"/>
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerUsers"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- ✅ ACTIVITY LOGS -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutActivityLogs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:padding="16dp"
+        android:background="#F5F7FA">
+
+        <!-- TITLE -->
+        <TextView
+            android:id="@+id/txtLogsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/activity_logs1"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <!-- FILTERS -->
+        <LinearLayout
+            android:id="@+id/logFilterLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp"
-            app:layout_constraintTop_toTopOf="parent"
+            android:orientation="horizontal"
+            android:paddingTop="12dp"
+            app:layout_constraintTop_toBottomOf="@id/txtLogsTitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
+            <Button
+                android:id="@+id/btnAll"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="All" />
 
-            <!-- Welcome -->
-            <TextView
-                android:id="@+id/tvWelcome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/welcome_admin"
-                android:textColor="@color/total_ai_request"
-                android:textSize="22sp"
-                android:textStyle="bold" />
+            <Button
+                android:id="@+id/btnLogins"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="Logins" />
 
-            <TextView
-                android:id="@+id/tvAdminName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:text="@string/admin_name"
-                android:textColor="@color/total_ai_request"
-                android:textSize="20sp" />
+            <Button
+                android:id="@+id/btnUsage"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="Usage" />
 
-            <!-- DASHBOARD GRID -->
-            <GridLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:columnCount="2"
-                android:useDefaultMargins="true">
-
-                <!-- Total Users -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:elevation="6dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp"
-                        android:background="@color/total_user">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/total_users"
-                            android:textColor="@android:color/white"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/tvTotalUsers"
-                            android:text="@string/value_zero"
-                            android:textColor="@android:color/white"
-                            android:textSize="22sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <!-- Active Users -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:elevation="6dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp"
-                        android:background="@color/active_user">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/active_users"
-                            android:textColor="@android:color/white"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/tvActiveUsers"
-                            android:text="@string/value_no"
-                            android:textColor="@android:color/white"
-                            android:textSize="22sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <!-- New Users -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:elevation="6dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp"
-                        android:background="@color/new_user">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/new_users_today"
-                            android:textColor="@android:color/white"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvNewUsers"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/value_zero"
-                            android:textColor="@android:color/white"
-                            android:textSize="22sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <!-- AI Requests -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:elevation="6dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp"
-                        android:background="@color/total_ai_request">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/total_ai_requests"
-                            android:textColor="@android:color/white"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvAiRequests"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/value_zero"
-                            android:textColor="@android:color/white"
-                            android:textSize="22sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <!-- Last Login -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_columnSpan="2"
-                    android:elevation="6dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp"
-                        android:background="@color/last_user">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/last_login_activity"
-                            android:textColor="@android:color/white"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvLastLogin"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@android:color/white"
-                            android:text="@string/value_zero" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-            </GridLayout>
+            <Button
+                android:id="@+id/btnErrors"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="Errors" />
 
         </LinearLayout>
+
+        <!-- LOG LIST -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/logsRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="400dp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toBottomOf="@id/logFilterLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
-
-
-
-
-
+    <!-- ================= LEFT DRAWER ================= -->
+    <LinearLayout
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#2E3440"
+        android:orientation="vertical"
+        android:padding="16dp">
+        <TextView
+            android:text="@string/admin_panel"
+            android:textColor="@color/button_text"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingBottom="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/menuDashboard"
+            android:text="@string/dashboard"
+            android:textColor="@color/button_text"
+            android:padding="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/menuUsers"
+            android:text="@string/user_management"
+            android:textColor="@color/button_text"
+            android:padding="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/menuLogs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/activity_logs"
+            android:textColor="@color/button_text"
+            android:textSize="16sp"
+            android:padding="12dp"/>
+        <TextView
+            android:id="@+id/menuSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings"
+            android:textColor="@color/button_text"
+            android:textSize="16sp"
+            android:padding="12dp"/>
+        <TextView
+            android:id="@+id/menuAIFeatures"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ai_features"
+            android:textColor="@color/button_text"
+            android:textSize="16sp"
+            android:padding="12dp"/>
+        <TextView
+            android:id="@+id/menuContentManagement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/content_management"
+            android:textColor="@color/button_text"
+            android:textSize="16sp"
+            android:padding="12dp"/>
+        <TextView
+            android:id="@+id/menuNotifications"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/notifications"
+            android:textColor="@color/button_text"
+            android:textSize="16sp"
+            android:padding="12dp"/>
+        <TextView
+            android:id="@+id/menuReports"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reports_analysis"
+            android:textColor="@color/button_text"
+            android:textSize="16sp"
+            android:padding="12dp"/>
+        <TextView
+            android:id="@+id/menuFeedback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/feedback_support"
+            android:textColor="@color/button_text"
+            android:textSize="16sp"
+            android:padding="12dp"/>
+        <TextView
+            android:id="@+id/menuAdminRoles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/admin_roles"
+            android:textColor="@color/button_text"
+            android:textSize="16sp"
+            android:padding="12dp"/>
+        <TextView
+            android:id="@+id/menuLogout"
+            android:text="@string/logout"
+            android:textColor="#FF6B6B"
+            android:padding="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

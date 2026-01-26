@@ -1,22 +1,23 @@
 package com.example.signiai
 
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FieldValue
-import java.util.Calendar
-import com.google.firebase.firestore.Query
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.content.Intent
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.util.Patterns
 import android.view.MotionEvent
 import android.view.View
-import android.widget.*
+import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.firebase.auth.FirebaseAuth
-
+import com.google.firebase.firestore.FirebaseFirestore
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mAuth: FirebaseAuth
@@ -26,7 +27,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var signupLayout: LinearLayout
     private lateinit var resetLayout: LinearLayout
     private lateinit var homeLayoutMain: ConstraintLayout
-    private lateinit var adminDashboardLayoutMain: ConstraintLayout
 
     private lateinit var imgLogo: ImageView
     private lateinit var tvForgot: TextView
@@ -34,11 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvSignupTitle: TextView
     private lateinit var tvSignupSubtitle: TextView
 
-    private lateinit var tvTotalUsers: TextView
-    private lateinit var tvActiveUsers: TextView
-    private lateinit var tvNewUsers: TextView
-    private lateinit var tvAiRequests: TextView
-    private lateinit var tvLastLogin: TextView
+
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -54,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         signupLayout = findViewById(R.id.signupLayout)
         resetLayout = findViewById(R.id.resetLayout)
         homeLayoutMain = findViewById(R.id.homeLayoutMain)
-        adminDashboardLayoutMain = findViewById(R.id.adminDashboardLayoutMain)
+
         imgLogo = findViewById(R.id.imgLogo)
 
         // Login views
@@ -80,12 +76,7 @@ class MainActivity : AppCompatActivity() {
         tvSignupSubtitle = findViewById(R.id.tvSignupSubtitle)
         val tvBackToLogin = findViewById<TextView>(R.id.tvBackToLogin)
 
-        //admin
-        tvTotalUsers = findViewById(R.id.tvTotalUsers)
-        tvActiveUsers = findViewById(R.id.tvActiveUsers)
-        tvNewUsers = findViewById(R.id.tvNewUsers)
-        tvAiRequests = findViewById(R.id.tvAiRequests)
-        tvLastLogin = findViewById(R.id.tvLastLogin)
+
 
 
         togglePassword(etPassword)
@@ -137,22 +128,41 @@ class MainActivity : AppCompatActivity() {
 
             mAuth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
-                    hideAll()
 
-                    // ADMIN CHECK
-                    if (email == "34harshadad@gmail.com") {
-                        adminDashboardLayoutMain.visibility = View.VISIBLE
-                        // 🔥 ADD THIS LINE HERE
-                        loadAdminDashboardData()
+                    val uid = mAuth.currentUser!!.uid
 
-                    } else {
-                        homeLayoutMain.visibility = View.VISIBLE
-                    }
+                    // ✅ STEP 3 — EXACT PLACE (YOU DID IT RIGHT)
+                    FirebaseFirestore.getInstance()
+                        .collection("users")
+                        .document(uid)
+                        .get()
+                        .addOnSuccessListener { doc ->
+
+                            if (!doc.exists()) {
+                                toast("USER DOCUMENT NOT FOUND")
+                                return@addOnSuccessListener
+                            }
+
+                            val role = doc.getString("role")
+
+                            if (role == "ADMIN") {
+                                startActivity(Intent(this, AdminDashboardActivity::class.java))
+                                finish()
+                            }
+                            else {
+                                hideAll()
+                                homeLayoutMain.visibility = View.VISIBLE
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            toast("Firestore error: ${e.message}")
+                        }
                 }
                 .addOnFailureListener {
                     toast(it.message ?: "Login failed")
                 }
         }
+
 
         // GO TO SIGNUP
         tvToSignup.setOnClickListener {
@@ -189,32 +199,30 @@ class MainActivity : AppCompatActivity() {
             // 🔥 Firebase signup starts AFTER validation
             mAuth.createUserWithEmailAndPassword(email, pass)
                 .addOnSuccessListener {
+                            val uid = mAuth.currentUser!!.uid
 
-                    val uid = mAuth.currentUser!!.uid
+                            val userMap = hashMapOf(
+                                "name" to name,
+                                "email" to email,
+                                "userType" to "user",
+                                "role" to "USER",
+                                "createdAt" to com.google.firebase.Timestamp.now(),
+                                "isActive" to true
+                            )
 
-                    val userMap = hashMapOf(
-                        "name" to name,
-                        "email" to email,
-                        "userType" to "user",
-                        "role" to "USER",
-                        "createdAt" to com.google.firebase.firestore.FieldValue.serverTimestamp(),
-                        "isActive" to true
-                    )
-
-                    com.google.firebase.firestore.FirebaseFirestore.getInstance()
-                        .collection("users")
-                        .document(uid)
-                        .set(userMap)
-                        .addOnSuccessListener {
-                            toast("Account created")
-                            showLoginOnly()
+                            FirebaseFirestore.getInstance()
+                                .collection("users")
+                                .document(uid)
+                                .set(userMap)
+                                .addOnSuccessListener {
+                                    toast("Account created")
+                                    showLoginOnly()
+                                }
+                        }
+                        .addOnFailureListener {
+                            toast(it.message ?: "Signup failed")
                         }
                 }
-                .addOnFailureListener {
-                    toast(it.message ?: "Signup failed")
-                }
-        }
-
 
         // BACK TO LOGIN
         tvBackToLogin.setOnClickListener {
@@ -247,61 +255,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadAdminDashboardData() {
-
-        val db = FirebaseFirestore.getInstance()
-
-        // TOTAL USERS
-        db.collection("users")
-            .get()
-            .addOnSuccessListener {
-                tvTotalUsers.text = it.size().toString()
-            }
-
-        // ACTIVE USERS
-        db.collection("users")
-            .whereEqualTo("isActive", true)
-            .get()
-            .addOnSuccessListener {
-                tvActiveUsers.text = it.size().toString()
-            }
-
-        // NEW USERS (TODAY)
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR_OF_DAY, 0)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
-
-        val startOfDay = calendar.time
-
-        db.collection("users")
-            .whereGreaterThan("createdAt", startOfDay)
-            .get()
-            .addOnSuccessListener {
-                tvNewUsers.text = it.size().toString()
-            }
-
-        // AI REQUESTS
-        db.collection("gesture_history")
-            .get()
-            .addOnSuccessListener {
-                tvAiRequests.text = it.size().toString()
-            }
-
-        // LAST LOGIN
-        db.collection("users")
-            .orderBy("createdAt", Query.Direction.DESCENDING)
-            .limit(1)
-            .get()
-            .addOnSuccessListener {
-                if (!it.isEmpty) {
-                    val ts = it.documents[0].getTimestamp("createdAt")
-                    tvLastLogin.text = ts?.toDate().toString()
-                }
-            }
-    }
-    
     // ================= HELPERS =================
 
     private fun hideAll() {
@@ -309,7 +262,6 @@ class MainActivity : AppCompatActivity() {
         signupLayout.visibility = View.GONE
         resetLayout.visibility = View.GONE
         homeLayoutMain.visibility = View.GONE
-        adminDashboardLayoutMain.visibility = View.GONE
         imgLogo.visibility = View.GONE
         tvForgot.visibility = View.GONE
         tvToSignup.visibility = View.GONE
