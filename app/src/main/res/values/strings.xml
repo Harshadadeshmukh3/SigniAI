@@ -71,6 +71,10 @@
     <string name="user_management1">User Management</string>
     <string name="menu_logo">menu_logo</string>
     <string name="activity_logs1">Activity Logs</string>
+    <string name="all">All</string>
+    <string name="logins">Logins</string>
+    <string name="usage">Usage</string>
+    <string name="errors">Errors</string>
 
     <!-- PLACEHOLDER VALUES (UPDATED FROM KOTLIN) -->
 
