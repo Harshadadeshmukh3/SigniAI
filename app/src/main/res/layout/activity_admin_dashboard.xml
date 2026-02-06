@@ -91,14 +91,15 @@
                     app:layout_constraintStart_toEndOf="@id/cardTotalUsers"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintWidth_percent="0.48">
+
                     <TextView
                         android:id="@+id/tvActiveUsers"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:text="@string/active_users"
                         android:textColor="@color/button_text"
-                        android:textSize="18sp"
-                        android:layout_gravity="center"/>
+                        android:textSize="18sp" />
                 </androidx.cardview.widget.CardView>
                 <!-- NEW USERS -->
                 <androidx.cardview.widget.CardView
@@ -128,7 +129,7 @@
                     android:layout_width="0dp"
                     android:layout_height="120dp"
                     android:layout_marginTop="12dp"
-                    android:backgroundTint="@color/total_ai_request"
+                    app:cardBackgroundColor="@color/total_ai_request"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="8dp"
                     app:layout_constraintTop_toBottomOf="@id/cardActiveUsers"
@@ -144,6 +145,7 @@
                         android:textSize="18sp"
                         android:layout_gravity="center"/>
                 </androidx.cardview.widget.CardView>
+
                 <!-- LAST USER -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardLastUser"
@@ -162,46 +164,83 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/last_login"
-                        android:textColor="@color/button_text"
+                        android:textColor="@color/text_on_dark"
                         android:textSize="18sp"
                         android:layout_gravity="center"/>
                 </androidx.cardview.widget.CardView>
             </androidx.constraintlayout.widget.ConstraintLayout>
-
             <!-- ✅ USER MANAGEMENT (PASTE HERE) -->
-            <LinearLayout
-                android:id="@+id/layoutUserManagement"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:visibility="gone"
-                android:padding="16dp"
-                android:background="#F5F6FA">
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/layoutUserManagement"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/user_management1"
-                    android:textSize="22sp"
-                    android:textStyle="bold"/>
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:padding="16dp"
+                    android:background="#F5F6FA">
 
-                <EditText
-                    android:id="@+id/etSearchUser"
+                    <!-- TITLE -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/user_management1"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:paddingBottom="12dp"/>
+
+                    <!-- SEARCH -->
+                    <EditText
+                        android:id="@+id/etSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:autofillHints="search"
+                        android:hint="@string/search_users"
+                        android:inputType="text"
+                        android:imeOptions="actionSearch"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:background="@android:drawable/edit_text"/>
+                    <!-- TABLE HEADER -->
+                <HorizontalScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:autofillHints="search"
-                    android:hint="@string/search_users"
-                    android:inputType="text"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:background="@android:drawable/edit_text"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp">
 
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:orientation="horizontal"
+                        android:background="#ECEFF1"
+                        android:padding="8dp">
+                        <TextView android:text="@string/name" android:layout_height="wrap_content" android:layout_width="120dp" android:textStyle="bold"/>
+                        <TextView android:text="@string/email"    android:layout_height="wrap_content" android:layout_width="220dp" android:textStyle="bold"/>
+                        <TextView android:text="@string/uid"    android:layout_height="wrap_content"  android:layout_width="140dp" android:textStyle="bold"/>
+                        <TextView android:text="@string/status"  android:layout_height="wrap_content"  android:layout_width="120dp" android:textStyle="bold"/>
+                        <TextView android:text="@string/actions" android:layout_height="wrap_content"  android:layout_width="160dp" android:textStyle="bold"/>
+                    </LinearLayout>
+                </HorizontalScrollView>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerUsers"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-            </LinearLayout>
+                <!-- TABLE BODY -->
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginTop="4dp"
+                        tools:ignore="NestedScrolling">
+        <!-- TABLE BODY -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <LinearLayout
+                android:id="@+id/userContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+                    </HorizontalScrollView>
+                </ScrollView>
+                </LinearLayout>
             </LinearLayout>
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -234,38 +273,150 @@
             android:paddingTop="12dp"
             app:layout_constraintTop_toBottomOf="@id/txtLogsTitle"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            style="?android:attr/buttonBarStyle">
 
             <Button
                 android:id="@+id/btnAll"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
-                android:text="All" />
+                android:text="@string/all"
+                style="?android:attr/buttonBarButtonStyle"/>
 
             <Button
                 android:id="@+id/btnLogins"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
-                android:text="Logins" />
+                android:text="@string/logins"
+                style="?android:attr/buttonBarButtonStyle"/>
 
             <Button
                 android:id="@+id/btnUsage"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
-                android:text="Usage" />
+                android:text="@string/usage"
+                style="?android:attr/buttonBarButtonStyle"/>
 
             <Button
                 android:id="@+id/btnErrors"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
-                android:text="Errors" />
-
+                android:text="@string/errors"
+                style="?android:attr/buttonBarButtonStyle"/>
         </LinearLayout>
+        <!-- ================= SETTINGS ================= -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layoutSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:padding="16dp"
+            android:background="#F5F7FA"
+            tools:ignore="MissingConstraints">
+        <!-- PAGE TITLE -->
+            <TextView
+                android:id="@+id/txtSettingsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
 
+            <!-- FEATURE CONTROLS -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardFeatures"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="6dp"
+                app:layout_constraintTop_toBottomOf="@id/txtSettingsTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <LinearLayout
+                    android:id="@+id/setting"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/feature_controls"
+                        android:textStyle="bold"/>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/switchAI"
+                        android:text="@string/enable_ai_features"/>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/switchNotification"
+                        android:text="@string/enable_notifications"/>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/switchRegister"
+                        android:text="@string/allow_user_registration"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <!-- API KEY -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardApi"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="6dp"
+                app:layout_constraintTop_toBottomOf="@id/cardFeatures"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <LinearLayout
+                    android:id="@+id/api"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/api_keys"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sk_live"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <!-- APP INFO -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardAppInfo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="6dp"
+                app:layout_constraintTop_toBottomOf="@id/cardApi"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    
         <!-- LOG LIST -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/logsRecyclerView"
@@ -276,7 +427,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
     <!-- ================= LEFT DRAWER ================= -->
     <LinearLayout
         android:layout_width="280dp"
@@ -315,14 +465,7 @@
             android:textColor="@color/button_text"
             android:textSize="16sp"
             android:padding="12dp"/>
-        <TextView
-            android:id="@+id/menuSettings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings"
-            android:textColor="@color/button_text"
-            android:textSize="16sp"
-            android:padding="12dp"/>
+
         <TextView
             android:id="@+id/menuAIFeatures"
             android:layout_width="wrap_content"
@@ -352,6 +495,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/reports_analysis"
+            android:textColor="@color/button_text"
+            android:textSize="16sp"
+            android:padding="12dp"/>
+        <TextView
+            android:id="@+id/menuSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings"
             android:textColor="@color/button_text"
             android:textSize="16sp"
             android:padding="12dp"/>

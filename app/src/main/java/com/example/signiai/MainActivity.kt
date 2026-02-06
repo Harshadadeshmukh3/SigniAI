@@ -76,9 +76,6 @@ class MainActivity : AppCompatActivity() {
         tvSignupSubtitle = findViewById(R.id.tvSignupSubtitle)
         val tvBackToLogin = findViewById<TextView>(R.id.tvBackToLogin)
 
-
-
-
         togglePassword(etPassword)
         togglePassword(etSignupPassword)
         togglePassword(etSignupConfirmPassword)

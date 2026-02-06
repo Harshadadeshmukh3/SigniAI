@@ -75,6 +75,19 @@
     <string name="logins">Logins</string>
     <string name="usage">Usage</string>
     <string name="errors">Errors</string>
+    <string name="feature_controls">Feature Controls</string>
+    <string name="enable_ai_features">Enable AI Features</string>
+    <string name="enable_notifications">Enable Notifications</string>
+    <string name="allow_user_registration">Allow User Registration</string>
+    <string name="api_keys">API Keys</string>
+    <string name="sk_live">sk_live_********************</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="uid">UID</string>
+    <string name="status">Status</string>
+    <string name="actions">Actions</string>
+    <string name="user_name">User Name</string>
+    <string name="user_email_com">user@email.com</string>
 
     <!-- PLACEHOLDER VALUES (UPDATED FROM KOTLIN) -->
 

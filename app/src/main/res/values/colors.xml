@@ -15,7 +15,8 @@
 
     <!-- Buttons -->
     <color name="button_text">#FFFFFF</color>
-
+    <color name="text_secondary_light">#222222</color>
+    <color name="text_on_dark">#F5F5F5</color>
     <!--or-->
     <color name="or">#CCCCCC</color>
 
