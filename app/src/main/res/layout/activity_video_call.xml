@@ -101,6 +101,4 @@
             tools:ignore="SpeakableTextPresentCheck" />
     </LinearLayout>
 
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

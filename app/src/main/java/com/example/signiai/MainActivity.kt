@@ -6,6 +6,13 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
+
 import android.annotation.SuppressLint
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
@@ -19,11 +26,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.Spinner
+import android.widget.ArrayAdapter
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+
     // Layouts
     private lateinit var loginLayout: LinearLayout
     private lateinit var signupLayout: LinearLayout
@@ -34,16 +44,22 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvToSignup: TextView
     private lateinit var tvSignupTitle: TextView
     private lateinit var tvSignupSubtitle: TextView
+    private lateinit var googleSignInClient: GoogleSignInClient
+    private val RC_SIGN_IN = 100
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
-
+        // ✅ Auto login check
+        if (FirebaseAuth.getInstance().currentUser != null) {
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
+            return
+        }
         mAuth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
+
 
     // Layout references
         loginLayout = findViewById(R.id.loginLayout)
@@ -62,6 +78,16 @@ class MainActivity : AppCompatActivity() {
         val etSignupPassword = findViewById<EditText>(R.id.etSignupPassword)
         val etSignupConfirmPassword = findViewById<EditText>(R.id.etSignupConfirmPassword)
         val btnSignup = findViewById<Button>(R.id.btnSignup)
+        val spUserType = findViewById<Spinner>(R.id.spUserType)
+
+        val adapter = ArrayAdapter.createFromResource(
+            this,
+            R.array.user_type_array,
+            android.R.layout.simple_spinner_item
+        )
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spUserType.adapter = adapter
 
         // Reset views
         val etResetEmail = findViewById<EditText>(R.id.etResetEmail)
@@ -73,7 +99,19 @@ class MainActivity : AppCompatActivity() {
         tvSignupTitle = findViewById(R.id.tvSignupTitle)
         tvSignupSubtitle = findViewById(R.id.tvSignupSubtitle)
         val tvBackToLogin = findViewById<TextView>(R.id.tvBackToLogin)
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
 
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+
+        val btnGoogleLogin = findViewById<Button>(R.id.btnGoogleLogin)
+
+        btnGoogleLogin.setOnClickListener {
+            val signInIntent = googleSignInClient.signInIntent
+            startActivityForResult(signInIntent, RC_SIGN_IN)
+        }
         togglePassword(etPassword)
         togglePassword(etSignupPassword)
         togglePassword(etSignupConfirmPassword)
@@ -81,34 +119,7 @@ class MainActivity : AppCompatActivity() {
         showLoginOnly()
 
         // 👁️ PASSWORD SHOW / HIDE (drawableEnd ic_eye)
-        // =====================================================
-        var isVisible = false
 
-        etPassword.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_UP) {
-
-                val drawableEnd = 2 // RIGHT drawable
-
-                if (etPassword.compoundDrawables[drawableEnd] != null &&
-                    event.rawX >=
-                    (etPassword.right -
-                            etPassword.compoundDrawables[drawableEnd].bounds.width())
-                ) {
-
-                    isVisible = !isVisible
-
-                    etPassword.transformationMethod =
-                        if (isVisible)
-                            HideReturnsTransformationMethod.getInstance()
-                        else
-                            PasswordTransformationMethod.getInstance()
-
-                    etPassword.setSelection(etPassword.text.length)
-                    return@setOnTouchListener true
-                }
-            }
-            false
-        }
 
         // LOGIN
         btnLogin.setOnClickListener {
@@ -175,6 +186,7 @@ class MainActivity : AppCompatActivity() {
             val email = etSignupEmail.text.toString().trim()
             val pass = etSignupPassword.text.toString()
             val confirm = etSignupConfirmPassword.text.toString()
+            val userType = spUserType.selectedItem.toString()
 
             // 🔴 ADD IT HERE (EXACT PLACE)
             if (name.isEmpty()) {
@@ -202,7 +214,7 @@ class MainActivity : AppCompatActivity() {
                         "email" to email,
                         "username" to name,
                         "about" to "",
-                        "userType" to "Normal",
+                        "userType" to userType,
                         "role" to "USER",
                         "totalCalls" to 0,
                         "contactsCount" to 0,
@@ -253,6 +265,40 @@ class MainActivity : AppCompatActivity() {
                     toast("Failed to send reset link")
                 }
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == RC_SIGN_IN) {
+
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+
+            try {
+                val account = task.getResult(ApiException::class.java)
+                firebaseAuthWithGoogle(account.idToken!!)
+            } catch (e: ApiException) {
+                toast("Google Sign In Failed")
+            }
+        }
+    }
+
+    private fun firebaseAuthWithGoogle(idToken: String) {
+
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+
+        mAuth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+
+                if (task.isSuccessful) {
+
+                    startActivity(Intent(this, HomeActivity::class.java))
+                    finish()
+
+                } else {
+                    toast("Authentication Failed")
+                }
+            }
     }
 
     // ================= HELPERS =================

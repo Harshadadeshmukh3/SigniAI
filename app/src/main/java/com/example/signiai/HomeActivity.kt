@@ -16,6 +16,7 @@ import android.widget.Toast
 import android.widget.Button
 import android.widget.EditText
 
+
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -30,6 +31,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
         mAuth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
         val uid = mAuth.currentUser?.uid
@@ -74,6 +76,7 @@ class HomeActivity : AppCompatActivity() {
         val menuIcon = findViewById<ImageView>(R.id.menuIcon)
         val profileIcon = findViewById<ImageView>(R.id.profileIcon)
 
+
         // Bottom Navigation
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
 
@@ -86,17 +89,17 @@ class HomeActivity : AppCompatActivity() {
 
         btnNormal.setOnClickListener {
             userType = "Normal"
-            Toast.makeText(this,"User type: Normal",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "User type: Normal", Toast.LENGTH_SHORT).show()
         }
 
         btnMute.setOnClickListener {
             userType = "Mute"
-            Toast.makeText(this,"User type: Mute",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "User type: Mute", Toast.LENGTH_SHORT).show()
         }
 
         btnDeaf.setOnClickListener {
             userType = "Deaf"
-            Toast.makeText(this,"User type: Deaf",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "User type: Deaf", Toast.LENGTH_SHORT).show()
         }
         val drawerLayout = findViewById<DrawerLayout>(R.id.drawerLayout)
 
@@ -104,7 +107,15 @@ class HomeActivity : AppCompatActivity() {
         val menuSettings = findViewById<LinearLayout>(R.id.menuSettings)
         val menuHelp = findViewById<LinearLayout>(R.id.menuHelp)
         val menuLogout = findViewById<LinearLayout>(R.id.menuLogout)
-        val startCallCard = findViewById<com.google.android.material.card.MaterialCardView>(R.id.startCallCard)
+        val startCallCard =
+            findViewById<com.google.android.material.card.MaterialCardView>(R.id.startCallCard)
+        menuLogout.setOnClickListener {
+
+            FirebaseAuth.getInstance().signOut()
+
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
 
         startCallCard.setOnClickListener {
 

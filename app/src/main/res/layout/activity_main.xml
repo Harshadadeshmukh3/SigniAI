@@ -44,7 +44,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
-                    android:autofillHints="Email"
+                    android:autofillHints="emailAddress"
                     android:background="@android:drawable/edit_text"
                     android:hint="@string/enter_email"
                     android:inputType="textEmailAddress"
@@ -56,8 +56,9 @@
 
                 <TextView
                     android:id="@+id/tvEmailError"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
                     android:layout_marginBottom="8dp"
                     android:text="@string/incorrect_email"
                     android:textColor="@color/text_error"
@@ -70,16 +71,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
-                    android:autofillHints="Enter password"
-                    android:background="@android:drawable/edit_text"
-                    android:hint="@string/password"
+                    android:hint="Password"
                     android:inputType="textPassword"
-                    android:drawableEnd="@drawable/ic_eye"
+                    android:autofillHints="password"
+                    android:background="@android:drawable/edit_text"
                     android:padding="12dp"
                     android:textColor="@color/text_primary"
                     android:textColorHint="@android:color/darker_gray"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:drawableEnd="@drawable/ic_eye"/>
 
                 <TextView
                     android:id="@+id/tvPassError"
@@ -151,6 +152,14 @@
                     android:padding="8dp"
                     android:text="@string/don_t_have_an_account_sign_up"
                     android:textColor="@android:color/holo_blue_dark" />
+                <Button
+                    android:id="@+id/btnGoogleLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="@string/continue_with_google"
+                    android:layout_marginTop="12dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:textColor="#000000"/>
 
             </LinearLayout>
 
@@ -290,34 +299,17 @@
                     android:hint="@string/confirm_password"
                     android:inputType="textPassword"
                     android:padding="12dp" />
-
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="6dp"
                     android:text="@string/user_type"
                     android:textStyle="bold" />
-
-
-                <CheckBox
-                    android:id="@+id/cbDeaf"
-                    android:layout_width="wrap_content"
+                <Spinner
+                    android:id="@+id/spUserType"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/deaf" />
-
-                <CheckBox
-                    android:id="@+id/cbMute"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/mute" />
-
-                <CheckBox
-                    android:id="@+id/cbNormal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:text="@string/normal" />
+                    android:layout_marginBottom="16dp"/>
 
                 <Button
                     android:id="@+id/btnSignup"
