@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "784422647430",
+    "project_id": "signiai-efc07",
+    "storage_bucket": "signiai-efc07.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:784422647430:android:18b2753af3f671d5290307",
+        "android_client_info": {
+          "package_name": "com.example.signiai"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "784422647430-vc5lojftg7s2s8r1ika7nefthcmbbg8m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.signiai",
+            "certificate_hash": "2315f70948ec85b1db03e71618e86fc3c05f0143"
+          }
+        },
+        {
+          "client_id": "784422647430-1usesk306f9dp9p4n5vdkjbv0tqdpd7s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsLo9To1_ZtkV6l-lr9Y9USnsgt4rChtk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "784422647430-1usesk306f9dp9p4n5vdkjbv0tqdpd7s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

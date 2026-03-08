@@ -88,7 +88,49 @@
     <string name="actions">Actions</string>
     <string name="user_name">User Name</string>
     <string name="user_email_com">user@email.com</string>
-
     <!-- PLACEHOLDER VALUES (UPDATED FROM KOTLIN) -->
+    <!--home-->
+    <string name="hello_bhumi">Hello, User! 👋</string>
+    <string name="ready_to_connect_with_someone_today">Ready to connect with someone today?</string>
+    <string name="total_calls">Total Calls</string>
+    <string name="_17">17</string>
+    <string name="contacts">Contacts</string>
+    <string name="_5">5</string>
+    <string name="add">+</string>
+    <string name="click_to_begin_a_new_video_call_session">Click to begin a new video call session</string>
+    <string name="h">H</string>
+    <string name="harshada">Harshada</string>
+    <string name="_2_hours_ago_45_min">2 hours ago • 45 min</string>
+    <string name="b">B</string>
+    <string name="bhumi">Bhumi</string>
+    <string name="_5_hours_ago_30_min">5 hours ago • 30 min</string>
+    <string name="bhavisha">Bhavisha</string>
+    <string name="s">S</string>
+    <string name="shruti">Shruti</string>
+    <string name="call_history">Call History</string>
+    <string name="v">V</string>
+    <string name="vandana">Vandana</string>
+    <string name="signiai_project">SigniAI Project</string>
+    <string name="yesterday_22_43">Yesterday, 22:43</string>
+    <string name="profile">Profile</string>
+    <string name="edit">edit</string>
+    <string name="bhumi_shrivastav">Bhumi Shrivastav</string>
+    <string name="about">About</string>
+    <string name="be_happy">Be happy 😊</string>
+    <string name="links">Links</string>
+    <string name="add_links">Add links</string>
+    <string name="user">User</string>
+    <string name="bhumi_05">Bhumi_05</string>
+    <string name="bhumi05">bhumi05</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="signiai">SigniAI</string>
+    <string name="help">Help</string>
+    <string name="create_video_meeting">Create Video Meeting</string>
+    <string name="generate_meeting_link">Generate Meeting Link</string>
+    <string name="your_meeting_link_will_appear_here">Your meeting link will appear here</string>
+    <string name="share_via_gmail">Share via Gmail</string>
+    <string name="home">Home</string>
+    <string name="video_call">Video Call</string>
+    <string name="start_video_call1">Start Video Call</string>
 
 </resources>

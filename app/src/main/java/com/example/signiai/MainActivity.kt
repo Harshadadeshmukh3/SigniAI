@@ -1,8 +1,12 @@
 package com.example.signiai
 
-import android.annotation.SuppressLint
-import android.os.Bundle
 import android.content.Intent
+import android.os.Bundle
+import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+
+import android.annotation.SuppressLint
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.util.Patterns
@@ -13,11 +17,9 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mAuth: FirebaseAuth
@@ -26,7 +28,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var loginLayout: LinearLayout
     private lateinit var signupLayout: LinearLayout
     private lateinit var resetLayout: LinearLayout
-    private lateinit var homeLayoutMain: ConstraintLayout
 
     private lateinit var imgLogo: ImageView
     private lateinit var tvForgot: TextView
@@ -34,23 +35,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvSignupTitle: TextView
     private lateinit var tvSignupSubtitle: TextView
 
-
-
-
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
+
         mAuth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
-        // Layout references
+    // Layout references
         loginLayout = findViewById(R.id.loginLayout)
         signupLayout = findViewById(R.id.signupLayout)
         resetLayout = findViewById(R.id.resetLayout)
-        homeLayoutMain = findViewById(R.id.homeLayoutMain)
-
         imgLogo = findViewById(R.id.imgLogo)
 
         // Login views
@@ -148,7 +146,8 @@ class MainActivity : AppCompatActivity() {
                             }
                             else {
                                 hideAll()
-                                homeLayoutMain.visibility = View.VISIBLE
+                                startActivity(Intent(this, HomeActivity::class.java))
+                                finish()
                             }
                         }
                         .addOnFailureListener { e ->
@@ -198,14 +197,18 @@ class MainActivity : AppCompatActivity() {
                 .addOnSuccessListener {
                             val uid = mAuth.currentUser!!.uid
 
-                            val userMap = hashMapOf(
-                                "name" to name,
-                                "email" to email,
-                                "userType" to "user",
-                                "role" to "USER",
-                                "createdAt" to com.google.firebase.Timestamp.now(),
-                                "isActive" to true
-                            )
+                    val userMap = hashMapOf(
+                        "name" to name,
+                        "email" to email,
+                        "username" to name,
+                        "about" to "",
+                        "userType" to "Normal",
+                        "role" to "USER",
+                        "totalCalls" to 0,
+                        "contactsCount" to 0,
+                        "createdAt" to com.google.firebase.Timestamp.now(),
+                        "isActive" to true
+                    )
 
                             FirebaseFirestore.getInstance()
                                 .collection("users")
@@ -258,7 +261,6 @@ class MainActivity : AppCompatActivity() {
         loginLayout.visibility = View.GONE
         signupLayout.visibility = View.GONE
         resetLayout.visibility = View.GONE
-        homeLayoutMain.visibility = View.GONE
         imgLogo.visibility = View.GONE
         tvForgot.visibility = View.GONE
         tvToSignup.visibility = View.GONE
@@ -300,3 +302,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
