@@ -1,114 +1,202 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="280dp"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F5F7FA">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <!-- 🔵 HEADER -->
+    <!-- Drawer Menu -->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="16dp"
-        android:background="#1E5FD8">
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#F5F7FA">
 
-        <ImageView
-            android:layout_width="48dp"
+
+        <!-- 🔵 HEADER -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:background="#1E5FD8">
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/todo"
+                android:src="@android:drawable/ic_menu_myplaces"
+                app:tint="@android:color/white"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/signiai"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:layout_marginStart="12dp"/>
+        </LinearLayout>
+
+        <!-- Settings -->
+        <LinearLayout
+            android:id="@+id/menuSettings"
+            android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:contentDescription="@string/todo"
-            android:src="@android:drawable/ic_menu_myplaces"
-            app:tint="@android:color/white"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            tools:ignore="RtlSymmetry,UseCompoundDrawables">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/signiai"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:layout_marginStart="12dp"/>
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@android:drawable/ic_menu_manage"
+                android:contentDescription="@string/todo"
+                app:tint="#37474F"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings"
+                android:textSize="16sp"
+                android:textColor="#000"
+                android:layout_marginStart="16dp"/>
+        </LinearLayout>
+        <!-- Feedback -->
+        <LinearLayout
+            android:id="@+id/menuFeedback"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            tools:ignore="RtlSymmetry,UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@android:drawable/ic_menu_send"
+                android:contentDescription="@string/todo"
+                app:tint="#37474F"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/feedback"
+                android:textSize="16sp"
+                android:textColor="#000"
+                android:layout_marginStart="16dp"/>
+        </LinearLayout>
+        <!-- Logout -->
+        <LinearLayout
+            android:id="@+id/menuLogout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:layout_marginTop="8dp"
+            tools:ignore="RtlSymmetry,UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@android:drawable/ic_lock_power_off"
+                android:contentDescription="@string/todo"
+                app:tint="#B71C1C"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/logout"
+                android:textSize="16sp"
+                android:textColor="#D32F2F"
+                android:layout_marginStart="16dp"/>
+        </LinearLayout>
+
     </LinearLayout>
-
-    <!-- Settings -->
-    <LinearLayout
-        android:id="@+id/menuSettings"
+    <!-- SETTINGS SCREEN (HIDDEN BY DEFAULT) -->
+    <ScrollView
+        android:id="@+id/settingsLayout"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingStart="16dp"
-        tools:ignore="RtlSymmetry,UseCompoundDrawables">
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#F5F7FA">
 
-        <ImageView
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:src="@android:drawable/ic_menu_manage"
-            android:contentDescription="@string/todo"
-            app:tint="#37474F"/>
-
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/settings"
-            android:textSize="16sp"
-            android:textColor="#000"
-            android:layout_marginStart="16dp"/>
-    </LinearLayout>
-    <!-- Help -->
-    <LinearLayout
-        android:id="@+id/menuHelp"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingStart="16dp"
-        tools:ignore="RtlSymmetry,UseCompoundDrawables">
+            android:orientation="vertical"
+            android:padding="20dp">
 
-        <ImageView
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:src="@android:drawable/ic_menu_help"
-            android:contentDescription="@string/todo"
-            app:tint="#37474F"/>
+            <TextView
+                android:text="Settings"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#000"
+                android:layout_marginBottom="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/help"
-            android:textSize="16sp"
-            android:textColor="#000"
-            android:layout_marginStart="16dp"/>
-    </LinearLayout>
-    <!-- Logout -->
-    <LinearLayout
-        android:id="@+id/menuLogout"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingStart="16dp"
-        android:layout_marginTop="8dp"
-        tools:ignore="RtlSymmetry,UseCompoundDrawables">
+            <!-- Dark Mode -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:background="#EDE7F6"
+                android:layout_marginBottom="12dp">
 
-        <ImageView
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:src="@android:drawable/ic_lock_power_off"
-            android:contentDescription="@string/todo"
-            app:tint="#B71C1C"/>
+                <TextView
+                    android:text="🌙 Dark Mode"
+                    android:textSize="18sp"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/logout"
-            android:textSize="16sp"
-            android:textColor="#D32F2F"
-            android:layout_marginStart="16dp"/>
-    </LinearLayout>
+                <Switch
+                    android:id="@+id/switchDark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
 
-</LinearLayout>
+            <!-- Help -->
+            <LinearLayout
+                android:id="@+id/helpBtn"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:background="#EDE7F6"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:text="❓ Help and  Support"
+                    android:textSize="18sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <!-- About -->
+            <LinearLayout
+                android:id="@+id/aboutBtn"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:background="#EDE7F6">
+
+                <TextView
+                    android:text="ℹ️ About SigniAI"
+                    android:textSize="18sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

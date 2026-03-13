@@ -1,68 +1,85 @@
 package com.example.signiai
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.graphics.*
 import android.os.Bundle
-import android.widget.Toast
+import android.widget.ImageButton
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import org.tensorflow.lite.Interpreter
-import java.io.FileInputStream
-import java.nio.MappedByteBuffer
-import java.nio.channels.FileChannel
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.Preview
+import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import org.tensorflow.lite.Interpreter
+import java.io.ByteArrayOutputStream
+import java.io.FileInputStream
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.nio.MappedByteBuffer
+import java.nio.channels.FileChannel
 
 class VideoCallActivity : AppCompatActivity() {
 
+    private lateinit var previewView: PreviewView
+    private lateinit var resultText: TextView
     private lateinit var tflite: Interpreter
+
+    private val cameraPermissionCode = 1001
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video_call)
-        val previewView = findViewById<PreviewView>(R.id.previewView)
 
-        // Camera permission
+        previewView = findViewById(R.id.previewView)
+        resultText = findViewById(R.id.resultText)
+
+        val btnEndCall = findViewById<ImageButton>(R.id.btnEndCall)
+        btnEndCall.setOnClickListener { finish() }
+
+        // Load ML model
+        tflite = Interpreter(loadModelFile())
+
+        checkCameraPermission()
+    }
+
+    private fun checkCameraPermission() {
+
         if (ContextCompat.checkSelfPermission(
                 this,
-                android.Manifest.permission.CAMERA
-            ) != android.content.pm.PackageManager.PERMISSION_GRANTED
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
         ) {
-
-            requestPermissions(arrayOf(android.Manifest.permission.CAMERA), 100)
-
+            startCamera()
         } else {
 
-            startCamera()
-
-        }
-
-        // Load TensorFlow model safely
-        try {
-            tflite = Interpreter(loadModelFile())
-            Toast.makeText(this, "Model loaded successfully", Toast.LENGTH_SHORT).show()
-        } catch (e: Exception) {
-            Toast.makeText(this, "Model loading failed", Toast.LENGTH_LONG).show()
-            e.printStackTrace()
-        }
-
-        // Get meeting ID
-        val data = intent?.data
-        val meetingIdFromLink = data?.lastPathSegment
-        val meetingIdFromApp = intent.getStringExtra("MEETING_ID")
-
-        val meetingId = meetingIdFromLink ?: meetingIdFromApp
-
-        Toast.makeText(this, "Joining meeting: $meetingId", Toast.LENGTH_LONG).show()
-
-        if (::tflite.isInitialized) {
-            runModelTest()
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.CAMERA),
+                cameraPermissionCode
+            )
         }
     }
 
-    // ⭐ CAMERA FUNCTION (OUTSIDE onCreate)
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == cameraPermissionCode &&
+            grantResults.isNotEmpty() &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
+        ) {
+            startCamera()
+        }
+    }
+
     private fun startCamera() {
-        Toast.makeText(this,"Camera started",Toast.LENGTH_SHORT).show()
+        resultText.text = "Starting camera..."
 
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
@@ -71,27 +88,113 @@ class VideoCallActivity : AppCompatActivity() {
             val cameraProvider = cameraProviderFuture.get()
 
             val preview = Preview.Builder().build()
-
-            val previewView = findViewById<PreviewView>(R.id.previewView)
-
             preview.setSurfaceProvider(previewView.surfaceProvider)
 
             val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
 
+            val imageAnalyzer = ImageAnalysis.Builder()
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+
+            imageAnalyzer.setAnalyzer(ContextCompat.getMainExecutor(this)) { imageProxy ->
+
+                imageProxy.close()
+
+            }
+
             cameraProvider.unbindAll()
 
             cameraProvider.bindToLifecycle(
-                this,
+                this@VideoCallActivity,
                 cameraSelector,
-                preview
+                preview,
+                imageAnalyzer
             )
 
         }, ContextCompat.getMainExecutor(this))
     }
 
+    private fun analyzeImage(imageProxy: ImageProxy) {
+
+        val bitmap = imageProxyToBitmap(imageProxy)
+
+        val resizedBitmap = Bitmap.createScaledBitmap(bitmap, 28, 28, true)
+
+        val inputBuffer = ByteBuffer.allocateDirect(4 * 28 * 28)
+        inputBuffer.order(ByteOrder.nativeOrder())
+
+        for (y in 0 until 28) {
+            for (x in 0 until 28) {
+
+                val pixel = resizedBitmap.getPixel(x, y)
+
+                val gray =
+                    ((pixel shr 16 and 0xFF) +
+                            (pixel shr 8 and 0xFF) +
+                            (pixel and 0xFF)) / 3f / 255f
+
+                inputBuffer.putFloat(gray)
+            }
+        }
+
+        val output = Array(1) { FloatArray(26) }
+
+        tflite.run(inputBuffer, output)
+
+        val prediction = output[0].indices.maxByOrNull { output[0][it] } ?: -1
+
+        val letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+        if (prediction >= 0) {
+
+            val detectedLetter = letters[prediction]
+
+            runOnUiThread {
+                resultText.text = "Detected: $detectedLetter"
+            }
+        }
+    }
+
+    private fun imageProxyToBitmap(imageProxy: ImageProxy): Bitmap {
+
+        val yBuffer = imageProxy.planes[0].buffer
+        val uBuffer = imageProxy.planes[1].buffer
+        val vBuffer = imageProxy.planes[2].buffer
+
+        val ySize = yBuffer.remaining()
+        val uSize = uBuffer.remaining()
+        val vSize = vBuffer.remaining()
+
+        val nv21 = ByteArray(ySize + uSize + vSize)
+
+        yBuffer.get(nv21, 0, ySize)
+        vBuffer.get(nv21, ySize, vSize)
+        uBuffer.get(nv21, ySize + vSize, uSize)
+
+        val yuvImage = YuvImage(
+            nv21,
+            ImageFormat.NV21,
+            imageProxy.width,
+            imageProxy.height,
+            null
+        )
+
+        val out = ByteArrayOutputStream()
+
+        yuvImage.compressToJpeg(
+            Rect(0, 0, imageProxy.width, imageProxy.height),
+            100,
+            out
+        )
+
+        val imageBytes = out.toByteArray()
+
+        return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+    }
+
     private fun loadModelFile(): MappedByteBuffer {
 
-        val fileDescriptor = assets.openFd("sign_language_model.tflite")
+        val fileDescriptor = assets.openFd("model.tflite")
         val inputStream = FileInputStream(fileDescriptor.fileDescriptor)
         val fileChannel = inputStream.channel
 
@@ -102,34 +205,8 @@ class VideoCallActivity : AppCompatActivity() {
         )
     }
 
-    private fun runModelTest() {
-
-        val input = Array(1) { FloatArray(63) }
-        val output = Array(1) { FloatArray(26) }
-
-        tflite.run(input, output)
-
-        Toast.makeText(this, "Model test run successful", Toast.LENGTH_SHORT).show()
-    }
-
-    // ⭐ ADD THIS FUNCTION HERE
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode == 100 && grantResults.isNotEmpty() &&
-            grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED
-        ) {
-
-            startCamera()
-
-        } else {
-
-            Toast.makeText(this, "Camera permission denied", Toast.LENGTH_LONG).show()
-
-        }
+    override fun onDestroy() {
+        super.onDestroy()
+        tflite.close()
     }
 }
