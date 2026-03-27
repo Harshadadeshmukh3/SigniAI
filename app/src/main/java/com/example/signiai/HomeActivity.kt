@@ -10,11 +10,12 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.drawerlayout.widget.DrawerLayout
+import android.widget.Switch
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.GravityCompat
 import android.widget.LinearLayout
 import android.widget.Toast
 import android.widget.Button
-import android.widget.EditText
 
 
 import com.google.firebase.auth.FirebaseAuth
@@ -23,15 +24,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 class HomeActivity : AppCompatActivity() {
     private lateinit var mAuth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
-    private lateinit var profileName: TextView
-    private lateinit var profileUsername: TextView
-    private lateinit var profileAbout: TextView
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint("MissingInflatedId", "SetTextI18n", "UseSwitchCompatOrMaterialCode")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-
         mAuth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
         val uid = mAuth.currentUser?.uid
@@ -62,6 +59,7 @@ class HomeActivity : AppCompatActivity() {
                         findViewById<TextView>(R.id.profileName).text = name
                         findViewById<TextView>(R.id.profileUsername).text = username
                         findViewById<TextView>(R.id.profileAbout).text = about
+
                     }
                 }
         }
@@ -75,7 +73,6 @@ class HomeActivity : AppCompatActivity() {
         // Toolbar Icons
         val menuIcon = findViewById<ImageView>(R.id.menuIcon)
         val profileIcon = findViewById<ImageView>(R.id.profileIcon)
-
 
         // Bottom Navigation
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
@@ -102,21 +99,30 @@ class HomeActivity : AppCompatActivity() {
             Toast.makeText(this, "User type: Deaf", Toast.LENGTH_SHORT).show()
         }
         val drawerLayout = findViewById<DrawerLayout>(R.id.drawerLayout)
+        val settingsLayout = findViewById<ScrollView>(R.id.settingsLayout)
+        val darkSwitch = findViewById<Switch>(R.id.switchDark)
+        val helpBtn = findViewById<LinearLayout>(R.id.helpBtn)
+        val aboutBtn = findViewById<LinearLayout>(R.id.aboutBtn)
+        darkSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
 
+                AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate.MODE_NIGHT_YES
+                )
+
+            } else {
+
+                AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate.MODE_NIGHT_NO
+                )
+            }
+        }
         // Drawer menu items
         val menuSettings = findViewById<LinearLayout>(R.id.menuSettings)
-        val menuHelp = findViewById<LinearLayout>(R.id.menuHelp)
+        val feedback = findViewById<LinearLayout>(R.id.menuFeedback)
         val menuLogout = findViewById<LinearLayout>(R.id.menuLogout)
         val startCallCard =
             findViewById<com.google.android.material.card.MaterialCardView>(R.id.startCallCard)
-        menuLogout.setOnClickListener {
-
-            FirebaseAuth.getInstance().signOut()
-
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        }
-
         startCallCard.setOnClickListener {
 
             val intent = Intent(this, GeneratedActivity::class.java)
@@ -124,10 +130,12 @@ class HomeActivity : AppCompatActivity() {
 
         }
         // Default Screen
+        // Default Screen (App start)
         homeLayout.visibility = View.VISIBLE
         callHistoryLayout.visibility = View.GONE
         profileLayout.visibility = View.GONE
         userProfileLayout.visibility = View.GONE
+        settingsLayout.visibility = View.GONE
 
         menuIcon.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
@@ -136,24 +144,37 @@ class HomeActivity : AppCompatActivity() {
 
             drawerLayout.closeDrawer(GravityCompat.START)
 
-            homeLayout.visibility = View.GONE
-            callHistoryLayout.visibility = View.GONE
-            profileLayout.visibility = View.GONE
+            drawerLayout.post {
+
+                homeLayout.visibility = View.GONE
+                callHistoryLayout.visibility = View.GONE
+                profileLayout.visibility = View.GONE
+                userProfileLayout.visibility = View.GONE
+
+                settingsLayout.visibility = View.VISIBLE
+            }
+        }
+        helpBtn.setOnClickListener {
+            Toast.makeText(this, "Help & Support", Toast.LENGTH_SHORT).show()
         }
 
-        menuHelp.setOnClickListener {
+        aboutBtn.setOnClickListener {
+            Toast.makeText(this, "SigniAI v1.0", Toast.LENGTH_SHORT).show()
+        }
 
-            drawerLayout.closeDrawer(GravityCompat.START)
-
-            Toast.makeText(this, "Help Clicked", Toast.LENGTH_SHORT).show()
+        feedback.setOnClickListener {
+            Toast.makeText(this, "Feedback clicked", Toast.LENGTH_SHORT).show()
         }
 
         menuLogout.setOnClickListener {
 
             drawerLayout.closeDrawer(GravityCompat.START)
 
+            FirebaseAuth.getInstance().signOut()
+
             Toast.makeText(this, "Logged Out", Toast.LENGTH_SHORT).show()
 
+            startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
         // Bottom Navigation Click
@@ -162,6 +183,9 @@ class HomeActivity : AppCompatActivity() {
             when (it.itemId) {
 
                 R.id.nav_home -> {
+
+                    settingsLayout.visibility = View.GONE
+
                     homeLayout.visibility = View.VISIBLE
                     callHistoryLayout.visibility = View.GONE
                     profileLayout.visibility = View.GONE
@@ -170,6 +194,9 @@ class HomeActivity : AppCompatActivity() {
                 }
 
                 R.id.nav_video -> {
+
+                    settingsLayout.visibility = View.GONE
+
                     homeLayout.visibility = View.GONE
                     callHistoryLayout.visibility = View.VISIBLE
                     profileLayout.visibility = View.GONE
@@ -178,6 +205,9 @@ class HomeActivity : AppCompatActivity() {
                 }
 
                 R.id.nav_profile -> {
+
+                    settingsLayout.visibility = View.GONE
+
                     homeLayout.visibility = View.GONE
                     callHistoryLayout.visibility = View.GONE
                     profileLayout.visibility = View.VISIBLE
@@ -185,12 +215,15 @@ class HomeActivity : AppCompatActivity() {
 
                     true
                 }
+
                 else -> false
             }
         }
 
         // Toolbar profile icon click
         profileIcon.setOnClickListener {
+
+            settingsLayout.visibility = View.GONE
 
             homeLayout.visibility = View.GONE
             callHistoryLayout.visibility = View.GONE
@@ -205,7 +238,7 @@ class HomeActivity : AppCompatActivity() {
             profileLayout.visibility = View.GONE
             userProfileLayout.visibility = View.VISIBLE
         }
-        val saveBtn = findViewById<android.widget.Button>(R.id.btnSave)
+        val saveBtn = findViewById<Button>(R.id.btnSave)
 
         saveBtn.setOnClickListener {
 
@@ -214,7 +247,7 @@ class HomeActivity : AppCompatActivity() {
 
             val uid = mAuth.currentUser?.uid
 
-            if(uid != null){
+            if (uid != null) {
                 val userMap = hashMapOf(
                     "name" to name,
                     "username" to username,
@@ -226,19 +259,20 @@ class HomeActivity : AppCompatActivity() {
                     .update(userMap as Map<String, Any>)
                     .addOnSuccessListener {
 
-                        Toast.makeText(this,"Profile Updated",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Profile Updated", Toast.LENGTH_SHORT).show()
 
                         userProfileLayout.visibility = View.GONE
                         profileLayout.visibility = View.VISIBLE
                     }
                     .addOnFailureListener {
 
-                        Toast.makeText(this,"Update Failed",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Update Failed", Toast.LENGTH_SHORT).show()
                     }
             }
         }
 
     }
+
     private fun loadUserProfile() {
 
         val uid = FirebaseAuth.getInstance().currentUser?.uid
@@ -257,9 +291,9 @@ class HomeActivity : AppCompatActivity() {
                         val username = doc.getString("username") ?: ""
                         val about = doc.getString("about") ?: ""
 
-                        profileName.text = name
-                        profileUsername.text = username
-                        profileAbout.text = about
+                        findViewById<TextView>(R.id.profileName).text = name
+                        findViewById<TextView>(R.id.profileUsername).text = username
+                        findViewById<TextView>(R.id.profileAbout).text = about
                     }
                 }
         }

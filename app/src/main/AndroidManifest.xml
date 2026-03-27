@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.signiai">
+
+    <!-- Camera permission -->
     <uses-permission android:name="android.permission.CAMERA"/>
+
+    <!-- Camera feature -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false"/>
+
     <application
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/signiai_logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -23,22 +30,18 @@
 
         </activity>
 
-        <!-- Home Screen -->
         <activity
             android:name=".HomeActivity"
             android:exported="false"/>
 
-        <!-- Generate Meeting Screen -->
         <activity
             android:name=".GeneratedActivity"
             android:exported="false"/>
 
-        <!-- Video Call Screen -->
         <activity
             android:name=".VideoCallActivity"
             android:exported="false"/>
 
-        <!-- Admin Dashboard -->
         <activity
             android:name=".AdminDashboardActivity"
             android:exported="false"/>
