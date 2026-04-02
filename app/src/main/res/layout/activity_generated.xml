@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    android:background="#EAF3FF">
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create or Join Meeting"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#1E5FD8"
+        android:layout_marginBottom="30dp"/>
+
+    <!-- Generate Meeting Button -->
+    <Button
+        android:id="@+id/btnCreateMeeting"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Generate Meeting ID"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#1E5FD8"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Meeting ID Display -->
+    <TextView
+        android:id="@+id/tvMeetingLink"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Meeting ID will appear here"
+        android:textColor="#000000"
+        android:background="#FFFFFF"
+        android:padding="12dp"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Enter Meeting ID -->
+    <EditText
+        android:id="@+id/etMeetingId"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Enter Meeting ID"
+        android:background="#FFFFFF"
+        android:padding="12dp"
+        android:layout_marginBottom="20dp"
+        android:imeOptions="actionDone"/>
+
+    <!-- Join Meeting Button -->
+    <Button
+        android:id="@+id/btnJoinMeeting"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Join Meeting"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#2E7D32"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Share Button -->
+    <Button
+        android:id="@+id/btnShareLink"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Share Meeting ID"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#1E5FD8"/>
+</LinearLayout>
+

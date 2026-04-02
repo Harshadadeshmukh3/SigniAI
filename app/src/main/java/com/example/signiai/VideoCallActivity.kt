@@ -1,165 +1,203 @@
 package com.example.signiai
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.os.Bundle
+import android.util.AttributeSet
+import android.util.Log
+import android.view.SurfaceView
+import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.PreviewView
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import org.tensorflow.lite.Interpreter
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import io.agora.rtc2.*
+import io.agora.rtc2.video.VideoCanvas
+import org.tensorflow.lite.support.image.TensorImage
+import org.tensorflow.lite.task.vision.classifier.ImageClassifier
 import java.io.ByteArrayOutputStream
-import java.io.FileInputStream
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.nio.MappedByteBuffer
-import java.nio.channels.FileChannel
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class VideoCallActivity : AppCompatActivity() {
 
-    private lateinit var previewView: PreviewView
-    private lateinit var resultText: TextView
-    private lateinit var tflite: Interpreter
+    private val AGORA_APP_ID = "a53f1351470f4ecd8f38ee7a4fc35c5a"
 
-    private val cameraPermissionCode = 1001
+    private lateinit var localContainer: FrameLayout
+    private lateinit var remoteContainer: FrameLayout
+    private lateinit var tvGesture: TextView
+
+    private lateinit var btnEndCall: FloatingActionButton
+    private lateinit var btnFlipCamera: ImageButton
+
+    private var mRtcEngine: RtcEngine? = null
+    private var channelName = "test_room"
+
+    // ML
+    private lateinit var cameraExecutor: ExecutorService
+    private var imageClassifier: ImageClassifier? = null
+
+    private val rtcHandler = object : IRtcEngineEventHandler() {
+        override fun onUserJoined(uid: Int, elapsed: Int) {
+            runOnUiThread { setupRemoteVideo(uid) }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video_call)
 
-        previewView = findViewById(R.id.previewView)
-        resultText = findViewById(R.id.resultText)
+        localContainer = findViewById(R.id.local_video_card)
+        remoteContainer = findViewById(R.id.remote_video_view_container)
+        tvGesture = findViewById(R.id.tvDetectedGesture)
 
-        val btnEndCall = findViewById<ImageButton>(R.id.btnEndCall)
-        btnEndCall.setOnClickListener { finish() }
+        btnEndCall = findViewById(R.id.btnEndCall)
+        btnFlipCamera = findViewById(R.id.btnFlipCamera)
 
-        // Load ML model
-        tflite = Interpreter(loadModelFile())
+        channelName = intent.getStringExtra("MEETING_ID") ?: "test_room"
 
-        checkCameraPermission()
-    }
+        cameraExecutor = Executors.newSingleThreadExecutor()
 
-    private fun checkCameraPermission() {
+        setupModel()
 
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.CAMERA
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            startCamera()
+        if (checkPermissions()) {
+            initAgora()
+            startDetectionCamera()
         } else {
-
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.CAMERA),
-                cameraPermissionCode
+            permissionLauncher.launch(
+                arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
             )
         }
+
+        btnEndCall.setOnClickListener { endCall() }
+        btnFlipCamera.setOnClickListener { mRtcEngine?.switchCamera() }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
+    // ================= AGORA =================
 
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    private fun initAgora() {
+        val config = RtcEngineConfig()
+        config.mContext = applicationContext
+        config.mAppId = AGORA_APP_ID
+        config.mEventHandler = rtcHandler
 
-        if (requestCode == cameraPermissionCode &&
-            grantResults.isNotEmpty() &&
-            grantResults[0] == PackageManager.PERMISSION_GRANTED
-        ) {
-            startCamera()
+        mRtcEngine = RtcEngine.create(config)
+        mRtcEngine?.enableVideo()
+
+        val localView = SurfaceView(this)
+        localView.setZOrderMediaOverlay(true)
+        localView.setZOrderOnTop(true)
+
+        localContainer.removeAllViews()
+        localContainer.addView(localView)
+
+        mRtcEngine?.setupLocalVideo(
+            VideoCanvas(localView, VideoCanvas.RENDER_MODE_HIDDEN, 0)
+        )
+
+        mRtcEngine?.startPreview()
+
+        val options = ChannelMediaOptions()
+        options.channelProfile = Constants.CHANNEL_PROFILE_COMMUNICATION
+        options.clientRoleType = Constants.CLIENT_ROLE_BROADCASTER
+        options.publishCameraTrack = true
+        options.publishMicrophoneTrack = true
+
+        mRtcEngine?.joinChannel(null, channelName, 0, options)
+    }
+
+    private fun setupRemoteVideo(uid: Int) {
+        val remoteView = SurfaceView(this)
+        remoteContainer.removeAllViews()
+        remoteContainer.addView(remoteView)
+
+        mRtcEngine?.setupRemoteVideo(
+            VideoCanvas(remoteView, VideoCanvas.RENDER_MODE_HIDDEN, uid)
+        )
+    }
+
+    // ================= ML MODEL =================
+
+    private fun setupModel() {
+        try {
+            val options = ImageClassifier.ImageClassifierOptions.builder()
+                .setMaxResults(1)
+                .build()
+
+            imageClassifier = ImageClassifier.createFromFileAndOptions(
+                this,
+                "gesture_model.tflite" // 🔥 YOUR FILE NAME
+                , options
+            )
+
+        } catch (e: Exception) {
+            Log.e("ML", "Model load error: ${e.message}")
         }
     }
 
-    private fun startCamera() {
-        resultText.text = "Starting camera..."
-
+    private fun startDetectionCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
         cameraProviderFuture.addListener({
-
             val cameraProvider = cameraProviderFuture.get()
 
-            val preview = Preview.Builder().build()
-            preview.setSurfaceProvider(previewView.surfaceProvider)
-
-            val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
-
-            val imageAnalyzer = ImageAnalysis.Builder()
+            val analysis = ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
-
-            imageAnalyzer.setAnalyzer(ContextCompat.getMainExecutor(this)) { imageProxy ->
-
-                imageProxy.close()
-
-            }
+                .also {
+                    it.setAnalyzer(cameraExecutor) { image ->
+                        processFrame(image)
+                    }
+                }
 
             cameraProvider.unbindAll()
-
             cameraProvider.bindToLifecycle(
-                this@VideoCallActivity,
-                cameraSelector,
-                preview,
-                imageAnalyzer
+                this,
+                CameraSelector.DEFAULT_FRONT_CAMERA,
+                analysis
             )
 
         }, ContextCompat.getMainExecutor(this))
     }
 
-    private fun analyzeImage(imageProxy: ImageProxy) {
+    private fun processFrame(image: ImageProxy) {
 
-        val bitmap = imageProxyToBitmap(imageProxy)
+        Log.d("ML", "Frame running")
 
-        val resizedBitmap = Bitmap.createScaledBitmap(bitmap, 28, 28, true)
+        val bitmap = imageToBitmap(image)
+        val rotated = rotateBitmap(bitmap, image.imageInfo.rotationDegrees)
 
-        val inputBuffer = ByteBuffer.allocateDirect(4 * 28 * 28)
-        inputBuffer.order(ByteOrder.nativeOrder())
+        if (imageClassifier != null && rotated != null) {
 
-        for (y in 0 until 28) {
-            for (x in 0 until 28) {
-
-                val pixel = resizedBitmap.getPixel(x, y)
-
-                val gray =
-                    ((pixel shr 16 and 0xFF) +
-                            (pixel shr 8 and 0xFF) +
-                            (pixel and 0xFF)) / 3f / 255f
-
-                inputBuffer.putFloat(gray)
-            }
-        }
-
-        val output = Array(1) { FloatArray(26) }
-
-        tflite.run(inputBuffer, output)
-
-        val prediction = output[0].indices.maxByOrNull { output[0][it] } ?: -1
-
-        val letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
-        if (prediction >= 0) {
-
-            val detectedLetter = letters[prediction]
+            val results = imageClassifier!!.classify(TensorImage.fromBitmap(rotated))
 
             runOnUiThread {
-                resultText.text = "Detected: $detectedLetter"
+
+                if (!results.isNullOrEmpty() && results[0].categories.isNotEmpty()) {
+                    val label = results[0].categories[0].label
+                    tvGesture.text = "Gesture: $label"
+                } else {
+                    tvGesture.text = "No gesture"
+                }
             }
         }
+
+        image.close()
     }
 
-    private fun imageProxyToBitmap(imageProxy: ImageProxy): Bitmap {
+    // ================= IMAGE UTILS =================
 
-        val yBuffer = imageProxy.planes[0].buffer
-        val uBuffer = imageProxy.planes[1].buffer
-        val vBuffer = imageProxy.planes[2].buffer
+    private fun imageToBitmap(image: ImageProxy): Bitmap? {
+        val yBuffer = image.planes[0].buffer
+        val uBuffer = image.planes[1].buffer
+        val vBuffer = image.planes[2].buffer
 
         val ySize = yBuffer.remaining()
         val uSize = uBuffer.remaining()
@@ -171,42 +209,43 @@ class VideoCallActivity : AppCompatActivity() {
         vBuffer.get(nv21, ySize, vSize)
         uBuffer.get(nv21, ySize + vSize, uSize)
 
-        val yuvImage = YuvImage(
-            nv21,
-            ImageFormat.NV21,
-            imageProxy.width,
-            imageProxy.height,
-            null
-        )
-
+        val yuvImage = YuvImage(nv21, ImageFormat.NV21, image.width, image.height, null)
         val out = ByteArrayOutputStream()
+        yuvImage.compressToJpeg(Rect(0, 0, image.width, image.height), 100, out)
 
-        yuvImage.compressToJpeg(
-            Rect(0, 0, imageProxy.width, imageProxy.height),
-            100,
-            out
-        )
-
-        val imageBytes = out.toByteArray()
-
-        return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+        return BitmapFactory.decodeByteArray(out.toByteArray(), 0, out.size())
     }
 
-    private fun loadModelFile(): MappedByteBuffer {
-
-        val fileDescriptor = assets.openFd("model.tflite")
-        val inputStream = FileInputStream(fileDescriptor.fileDescriptor)
-        val fileChannel = inputStream.channel
-
-        return fileChannel.map(
-            FileChannel.MapMode.READ_ONLY,
-            fileDescriptor.startOffset,
-            fileDescriptor.declaredLength
-        )
+    private fun rotateBitmap(bitmap: Bitmap?, rotation: Int): Bitmap? {
+        if (bitmap == null) return null
+        val matrix = Matrix()
+        matrix.postRotate(rotation.toFloat())
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
+
+    // ================= UTILS =================
+
+    private fun endCall() {
+        mRtcEngine?.leaveChannel()
+        RtcEngine.destroy()
+        finish()
+    }
+
+    private fun checkPermissions(): Boolean {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) ==
+                PackageManager.PERMISSION_GRANTED
+    }
+
+    private val permissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            initAgora()
+            startDetectionCamera()
+        }
 
     override fun onDestroy() {
         super.onDestroy()
-        tflite.close()
+        cameraExecutor.shutdown()
+        mRtcEngine?.leaveChannel()
+        RtcEngine.destroy()
     }
 }

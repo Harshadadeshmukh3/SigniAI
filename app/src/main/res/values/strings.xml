@@ -1,5 +1,4 @@
 <resources>
-
     <!-- APP -->
     <string name="app_name">SigniAI</string>
     <string name="logo_desc">SigniAI Logo</string>
@@ -53,7 +52,6 @@
     <string name="calls">Calls</string>
 
     <!-- ADMIN DASHBOARD -->
-
     <string name="admin_dashboard">Admin Dashboard</string>
     <string name="total_users">Total Users</string>
     <string name="active_users">Active Users</string>
@@ -93,8 +91,8 @@
     <string name="actions">Actions</string>
     <string name="user_name">User Name</string>
     <string name="user_email_com">user@email.com</string>
-    <!-- PLACEHOLDER VALUES (UPDATED FROM KOTLIN) -->
-    <!--home-->
+
+    <!-- PLACEHOLDERS -->
     <string name="hello_bhumi">Hello, User! 👋</string>
     <string name="ready_to_connect_with_someone_today">Ready to connect with someone today?</string>
     <string name="total_calls">Total Calls</string>
@@ -140,4 +138,41 @@
     <string name="continue_with_google">Continue with Google</string>
     <string name="feedback">Feedback</string>
 
+    <!-- Video/Camera Strings -->
+    <string name="back">Back</string>
+    <string name="sign_language_scanner">Sign Language Scanner</string>
+    <string name="detected_gesture">Detected Gesture</string>
+    <string name="__">--</string>
+    <string name="start_scan">Start Scan</string>
+    <string name="stop">Stop</string>
+
+    <!-- Settings Strings -->
+    <string name="dark_mode">Dark Mode</string>
+    <string name="toggle_dark_mode">Toggle Dark Mode</string>
+    <string name="help_and_support">Help and Support</string>
+    <string name="about_signiai">About SigniAI</string>
+    <string name="help_and_support1">Help &amp; Support</string>
+    <string name="_1_how_to_use_signiai">1. How to use SigniAI</string>
+    <string name="open_camera_and_show_hand_gesture_app_converts_sign_to_text">Open camera and show hand gesture; app converts sign to text.</string>
+    <string name="_2_camera_tips">2. Camera Tips</string>
+    <string name="good_lighting_n_keep_hand_visible_n_avoid_background_noise">Good lighting\nKeep hand visible\nAvoid background noise</string>
+    <string name="_3_troubleshooting">3. Troubleshooting</string>
+    <string name="adjust_lighting_if_detection_fails">Adjust lighting if detection fails.</string>
+    <string name="_4_contact">4. Contact</string>
+    <string name="support_signiai_com">support@signiai.com</string>
+    <string name="signiai1">SigniAI v1.0</string>
+
+    <!-- Missing Strings -->
+    <string name="version_1_0">Version 1.0</string>
+    <string name="ai_app_for_sign_language_to_text_conversion">AI app for Sign Language to Text conversion</string>
+    <string name="developer_harshada_deshmukh">Developer: Harshada Deshmukh</string>
+    <string name="help_us_improve_signiai_by_sharing_your_feedback">Help us improve SigniAI by sharing your feedback</string>
+    <string name="write_your_feedback">Write your feedback</string>
+    <string name="submit_feedback">Submit Feedback</string>
+
+    <!-- Accessibility Strings -->
+    <string name="mute_microphone">Mute Microphone</string>
+    <string name="end_call">End Call</string>
+    <string name="flip_camera">Flip Camera</string>
+    <string name="detecting">Detecting...</string>
 </resources>
